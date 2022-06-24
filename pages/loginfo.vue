@@ -8,45 +8,43 @@ export default {
   computed: {
     ...mapGetters({
       loggedIn: 'mAuth/loggedIn',
-      // accessToken: 'mAuth/accessToken',
       accessTokenParsed: 'mAuth/accessTokenParsed',
-      // refreshToken: 'mAuth/refreshToken',
       loginUrl: 'mAuth/loginUrl',
     })
   },
   async mounted() {
-    await this.$store.dispatch('mAuth/getTokens')
-    let pathnameSearch = `${location.pathname}${location.search}`
-    if (this.loggedIn) {
-      await this.$router.push({
-        path: pathnameSearch,
-      })
-    } else {
-      let params = getParams(location.hash)
-      await this.$router.push({
-        path: pathnameSearch,
-      })
-      if (params.code) {
-        await this.$store.dispatch('mAuth/getJwt', {
-          code: params.code,
-          redirectUri: getUri(location),
-        })
-      } else {
-        console.error('bad hash')
-      }
-    }
+    await this.$store.dispatch('mAuth/mounted')
+    // await this.$store.dispatch('mAuth/getTokens')
+    // let pathnameSearch = `${location.pathname}${location.search}`
+    // if (this.loggedIn) {
+    //   await this.$router.push({
+    //     path: pathnameSearch,
+    //   })
+    // } else {
+    //   let params = getParams(location.hash)
+    //   await this.$router.push({
+    //     path: pathnameSearch,
+    //   })
+    //   if (params.code) {
+    //     await this.$store.dispatch('mAuth/getJwt', {
+    //       code: params.code,
+    //       redirectUri: getUri(location),
+    //     })
+    //   }
+    // }
   },
   methods: {
     login: async function (socialNet) {
-      await this.$store.dispatch('mAuth/setCodeVerifier', {
-        redirectUri: getUri(location),
-        socialNet: socialNet,
-      })
-      window.location.href = this.loginUrl
+      if (socialNet == 'google') {
+        await this.$store.dispatch('mAuth/setCodeVerifier', {
+          redirectUri: getUri(location),
+          socialNet: socialNet,
+        })
+        window.location.href = this.loginUrl
+      } else {
+        alert('nothing but google is supported')
+      }
     },
-    // logout: function () {
-    //   this.$store.dispatch('mAuth/logout')
-    // },
   },
 }
 </script>
@@ -56,7 +54,7 @@ export default {
     <v-row>
       <v-col class="text-center">
         <v-btn color="primary" @click="login('google')" v-show="!loggedIn">Google</v-btn>
-        <!--        <v-btn color="secondary" @click="logout" v-show="loggedIn">logout</v-btn>-->
+        <v-btn color="primary" @click="login('facebook')" v-show="!loggedIn">Facebook</v-btn>
         <div v-if="loggedIn">
           <h2>UserInfo</h2>
           <v-container>

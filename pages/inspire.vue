@@ -10,8 +10,8 @@ export default {
       timeStrings: 'mTime/timeStrings',
     })
   },
-  mounted() {
-
+  async mounted() {
+    await this.$store.dispatch('mAuth/mounted')
   },
   methods: {
     getTime() {

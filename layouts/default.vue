@@ -1,6 +1,7 @@
 <script>
 import {ITEMS} from '/assets/consts/items'
 import {mapGetters} from "vuex";
+import {getUri, delay} from "assets/funcs/common";
 
 export default {
   name: 'DefaultLayout',
@@ -20,16 +21,32 @@ export default {
     ...mapGetters({
       loggedIn: 'mAuth/loggedIn',
       accessTokenParsed: 'mAuth/accessTokenParsed',
+      kcIdpHint: 'mAuth/kcIdpHint',
+      loginUrl: 'mAuth/loginUrl',
     })
   },
-  mounted() {
-
-    // console.log('--------default mounted-----------')
+  async mounted() {
+    await this.$store.dispatch('mAuth/getKcIdpHint')
+    console.log('--------default mounted-----------')
   },
   methods: {
     logout: function () {
       this.$store.dispatch('mAuth/logout')
     },
+    login: async function () {
+      if (this.kcIdpHint) {
+        await this.$store.dispatch('mAuth/setCodeVerifier', {
+          redirectUri: getUri(location),
+          socialNet: this.kcIdpHint,
+        })
+        window.location.href = this.loginUrl
+      } else {
+        await this.toLogInfo()
+      }
+    },
+    toLogInfo: async function () {
+      await this.$router.push('/loginfo')
+    }
   },
 }
 </script>
@@ -87,9 +104,9 @@ export default {
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
       <div v-if="loggedIn">
-        <img :src="accessTokenParsed.picture" alt="picture" class="picture">
+        <img :src="accessTokenParsed.picture" alt="picture" class="picture" @click="toLogInfo">
       </div>
-      <v-btn v-if="!loggedIn" icon nuxt to="/loginfo">
+      <v-btn v-if="!loggedIn" icon @click="login">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-btn v-if="loggedIn" icon @click="logout">
@@ -131,5 +148,6 @@ export default {
 img.picture {
   border-radius: 50%;
   height: 32px;
+  cursor: pointer;
 }
 </style>

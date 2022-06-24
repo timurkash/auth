@@ -1,7 +1,9 @@
 import axios from "axios";
 import {generateCodeChallengeFromVerifier, generateCodeVerifier} from "assets/funcs/pkce";
 import {generateUUID} from "assets/funcs/uuid";
+import {getParams, getUri} from "assets/funcs/common";
 
+const KC_IDP_HINT = 'kc_idp_hint'
 const CODE_VERIFIER = 'code_verifier'
 const ACCESS_TOKEN = 'access_token'
 const REFRESH_TOKEN = 'refresh_token' //also grant_type
@@ -13,6 +15,7 @@ const client = 'manager'
 const clientSecret = 'MEsxZND0uTmkhVJzmU3tcQDPWzwVflmk'
 
 export const state = () => ({
+  kcIdpHint: null,
   loggedIn: false,
   loginUrl: null,
   accessToken: null,
@@ -21,6 +24,7 @@ export const state = () => ({
 })
 
 export const getters = {
+  kcIdpHint: state => state.kcIdpHint,
   loggedIn: state => state.loggedIn,
   accessToken: state => state.accessToken,
   accessTokenParsed: state => state.accessTokenParsed,
@@ -29,6 +33,7 @@ export const getters = {
 }
 
 export const mutations = {
+  setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
   setLoggedIn: (state, loggedIn) => state.loggedIn = loggedIn,
   setTokens: (state, {accessToken, refreshToken}) => {
     state.loggedIn = true
@@ -59,14 +64,23 @@ function parseToken(token) {
   return JSON.parse(jsonPayload);
 }
 
+function getKeycloakUrl(route) {
+  return `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/${route}`
+}
+
 export async function getLoginUrl(redirectUrl, socialNet, codeVerifier) {
   let state = generateUUID()
   let nonce = generateUUID()
   let codeChallenge = await generateCodeChallengeFromVerifier(codeVerifier)
-  return `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/auth?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${socialNet}`
+  let url = getKeycloakUrl('auth')
+  return `${url}?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${socialNet}`
 }
 
 export const actions = {
+  async getKcIdpHint({commit}) {
+    let kcIdpHint = this.$cookies.get(KC_IDP_HINT)
+    commit('setKcIdpHint', kcIdpHint)
+  },
   async setCookies({}, data) {
     this.$cookies.set(ACCESS_TOKEN, data.access_token, {maxAge: data.expires_in})
     this.$cookies.set(REFRESH_TOKEN, data.refresh_token, {maxAge: data.refresh_expires_in})
@@ -74,6 +88,22 @@ export const actions = {
   async delCookies({}) {
     this.$cookies.remove(ACCESS_TOKEN)
     this.$cookies.remove(REFRESH_TOKEN)
+  },
+  async mounted({state, dispatch}){
+    await dispatch('getTokens')
+    let pathnameSearch = `${location.pathname}${location.search}`
+    if (state.loggedIn) {
+      await this.$router.push(pathnameSearch)
+    } else {
+      let params = getParams(location.hash)
+      await this.$router.push(pathnameSearch)
+      if (params.code) {
+        await dispatch('getJwt', {
+          code: params.code,
+          redirectUri: getUri(location),
+        })
+      }
+    }
   },
   async getTokens({commit, dispatch}) {
     let accessToken = this.$cookies.get(ACCESS_TOKEN)
@@ -99,7 +129,7 @@ export const actions = {
     }
     try {
       let {data} = await axios({
-        url: `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`,
+        url: getKeycloakUrl('token'),
         method: 'POST',
         data: getString({
           grant_type: REFRESH_TOKEN,
@@ -120,8 +150,12 @@ export const actions = {
     }
   },
   async setCodeVerifier({state, commit}, {redirectUri, socialNet}) {
+    this.$cookies.set(KC_IDP_HINT, socialNet, {
+      maxAge: 2592000,
+    })
     let codeVerifier = generateCodeVerifier()
     let loginUrl = await getLoginUrl(redirectUri, socialNet, codeVerifier)
+    console.log(loginUrl)
     commit('setLoginUrl', loginUrl)
     this.$cookies.set(CODE_VERIFIER, codeVerifier, {
       maxAge: 60,
@@ -137,7 +171,7 @@ export const actions = {
     }
     try {
       let {data} = await axios({
-        url: `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`,
+        url: getKeycloakUrl('token'),
         method: 'POST',
         data: getString({
           code: code,
@@ -166,14 +200,9 @@ export const actions = {
       commit('setLoggedOff')
       return
     }
-    // let accessToken = this.$cookies.get(ACCESS_TOKEN)
-    // if (!accessToken) {
-    //   console.log(`cookie ${ACCESS_TOKEN} is not set`)
-    //   return
-    // }
     try {
       let {data} = await axios({
-        url: `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/logout`,
+        url: getKeycloakUrl('logout'),
         method: 'POST',
         data: getString({
           client_id: client,
@@ -181,7 +210,6 @@ export const actions = {
           refresh_token: refreshToken,
         }),
         headers: {
-          // 'Authorization': `Bearer ${accessToken}`,
           'content-type': 'application/x-www-form-urlencoded',
         },
       })

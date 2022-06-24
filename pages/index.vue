@@ -1,7 +1,7 @@
 <script>
 import NuxtLogo from '~/components/logo/NuxtLogo'
 import VuetifyLogo from '~/components/logo/VuetifyLogo'
-import {mapGetters} from "vuex";
+import {mapGetters} from "vuex"
 
 export default {
   // name: 'IndexPage',
@@ -11,23 +11,20 @@ export default {
   },
   computed: {
     ...mapGetters({
-      loginUrl: 'mAuth/loginUrl',
+      // loginUrl: 'mAuth/loginUrl',
     })
   },
+  async mounted() {
+    await this.$store.dispatch('mAuth/mounted')
+  },
   methods: {
-    // async auth() {
-    //   await this.$store.dispatch('mAuth/setCodeVerifier', {
-    //     redirectUri: 'http://localhost:3000/loginfo?ttt=123',
-    //     socialNet: 'google',
-    //   })
-    //   window.location.href = this.loginUrl
-    // },
-  }
+  },
 }
 </script>
 
 <template>
   <v-row justify="center" align="center">
+<!--    <v-btn @click="getUri">ttt</v-btn>-->
     <v-col cols="12" sm="8" md="8">
       <v-card class="logo py-4 d-flex justify-center">
         <NuxtLogo/>
@@ -98,12 +95,12 @@ export default {
           <!--          >-->
           <!--            pkce-->
           <!--          </v-btn>-->
-<!--          <v-btn-->
-<!--            color="primary"-->
-<!--            @click="auth"-->
-<!--          >-->
-<!--            Auth-->
-<!--          </v-btn>-->
+          <!--          <v-btn-->
+          <!--            color="primary"-->
+          <!--            @click="auth"-->
+          <!--          >-->
+          <!--            Auth-->
+          <!--          </v-btn>-->
           <v-spacer/>
           <v-btn
             color="primary"
