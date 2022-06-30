@@ -34,15 +34,8 @@ export const actions = {
     try {
       const response = await getCurrentTimePromise()
       commit('unshiftTimeString', response.getCurrentTime())
-    }catch (err) {
+    } catch (err) {
       console.error(err)
     }
-    // client.getCurrentTime(new GetCurrentTimeRequest(), {}, (err, response) => {
-    //   if (err) {
-    //
-    //   } else {
-    //     commit('unshiftTimeString', response.getCurrentTime())
-    //   }
-    // });
   },
 }
