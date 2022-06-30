@@ -1,7 +1,7 @@
 <script>
 import {ITEMS} from '/assets/consts/items'
 import {mapGetters} from "vuex";
-import {getUri, delay} from "assets/funcs/common";
+import {getUri} from "assets/funcs/common";
 
 export default {
   name: 'DefaultLayout',
@@ -27,6 +27,8 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch('mAuth/getKcIdpHint')
+    let that = this
+    setInterval(() => that.$store.dispatch('mAuth/checkRefreshToken'), 60000);
     console.log('--------default mounted-----------')
   },
   methods: {
@@ -46,7 +48,10 @@ export default {
     },
     toLogInfo: async function () {
       await this.$router.push('/loginfo')
-    }
+    },
+    // checkRefreshToken: function () {
+    //   setInterval(this.$store.dispatch('mAuth/checkRefreshToken'), 5000);
+    // },
   },
 }
 </script>

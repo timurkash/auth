@@ -105,6 +105,12 @@ export const actions = {
       }
     }
   },
+  async checkRefreshToken({commit}) {
+    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
+    if (!refreshToken) {
+      commit('setLoggedOff')
+    }
+  },
   async getTokens({commit, dispatch}) {
     let accessToken = this.$cookies.get(ACCESS_TOKEN)
     let refreshToken = this.$cookies.get(REFRESH_TOKEN)

@@ -1,8 +1,6 @@
 import {TimeServiceClient} from "~/store/jsclient/time/v1/time_service_grpc_web_pb";
 import {GetCurrentTimeRequest} from "~/store/jsclient/time/v1/time_service_pb";
 
-const client = new TimeServiceClient("http://localhost:8091", null, null)
-
 export const state = () => ({
   timeString: 'n/a',
   timeStrings: [],
@@ -20,14 +18,31 @@ export const mutations = {
   emptyTimeString: (state) => state.timeStrings = [],
 }
 
-export const actions = {
-  getTime({commit}) {
-    client.getCurrentTime(new GetCurrentTimeRequest(), {}, (err, response) => {
-      if (err) {
+const client = new TimeServiceClient("http://localhost:8091", null, null)
 
-      } else {
-        commit('unshiftTimeString', response.getCurrentTime())
-      }
-    });
+const getCurrentTimePromise = () => {
+  return new Promise((resolve, reject) => {
+    client.getCurrentTime(new GetCurrentTimeRequest(), {}, (err, response) => {
+      if (err) return reject(err)
+      resolve(response)
+    })
+  })
+}
+
+export const actions = {
+  async getTime({commit}) {
+    try {
+      const response = await getCurrentTimePromise()
+      commit('unshiftTimeString', response.getCurrentTime())
+    }catch (err) {
+      console.error(err)
+    }
+    // client.getCurrentTime(new GetCurrentTimeRequest(), {}, (err, response) => {
+    //   if (err) {
+    //
+    //   } else {
+    //     commit('unshiftTimeString', response.getCurrentTime())
+    //   }
+    // });
   },
 }

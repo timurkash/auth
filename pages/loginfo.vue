@@ -1,5 +1,5 @@
 <script>
-import {getParams, getUri,} from '/assets/funcs/common'
+import {getUri,} from '/assets/funcs/common'
 import {mapGetters} from "vuex"
 
 export default {
@@ -8,6 +8,7 @@ export default {
   computed: {
     ...mapGetters({
       loggedIn: 'mAuth/loggedIn',
+      accessToken: 'mAuth/accessToken',
       accessTokenParsed: 'mAuth/accessTokenParsed',
       loginUrl: 'mAuth/loginUrl',
     })
@@ -72,7 +73,9 @@ export default {
             >
               {{item}}
             </span>
-<!--            <h3>AccessTokenParsed</h3>-->
+            <h3>AccessToken</h3>
+            <v-textarea :value="accessToken" />
+            <!--            <h3>AccessTokenParsed</h3>-->
 <!--            <p>{{ accessTokenParsed }}</p>-->
           </v-container>
           <!--          <div>-->
