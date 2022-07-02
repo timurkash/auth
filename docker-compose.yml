@@ -27,7 +27,7 @@ services:
     networks:
       - backend
 
-  postgres:
+  postgres-keycloak:
     image: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -44,7 +44,7 @@ services:
     image: jboss/keycloak:latest
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
+      DB_ADDR: postgres-keycloak
       DB_DATABASE: keycloak
       DB_USER: keycloak
       DB_SCHEMA: public
@@ -56,7 +56,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      - postgres-keycloak
     networks:
       - backend
 
