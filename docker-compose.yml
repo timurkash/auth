@@ -7,7 +7,7 @@ volumes:
 services:
   envoy:
     build:
-      context: ./envoytime/envoy
+      context: envoy_time/envoy
       dockerfile: Dockerfile
     image: timurkash/grpc-web-example-envoy
     ports:
@@ -15,17 +15,17 @@ services:
     links:
       - time-server
     networks:
-      - backend
+      - test-backend
 
   time-server:
     build:
-      context: ./envoytime/time
+      context: envoy_time/time
       dockerfile: Dockerfile
     image: timurkash/grpc-web-example-time
     ports:
       - "9090:9090"
     networks:
-      - backend
+      - test-backend
 
   postgres-keycloak:
     image: postgres
@@ -36,9 +36,9 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5434:5432"
     networks:
-      - backend
+      - test-backend
 
   keycloak:
     image: jboss/keycloak:latest
@@ -54,11 +54,11 @@ services:
       # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
       #JDBC_PARAMS: "ssl=true"
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       - postgres-keycloak
     networks:
-      - backend
+      - test-backend
 
 networks:
-  backend:
+  test-backend:
