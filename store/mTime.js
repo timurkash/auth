@@ -1,6 +1,8 @@
 import {TimeServiceClient} from "~/store/jsclient/time/v1/time_service_grpc_web_pb";
 import {GetCurrentTimeRequest} from "~/store/jsclient/time/v1/time_service_pb";
 
+const apiUrl = process.env.API_URL
+
 export const state = () => ({
   timeString: 'n/a',
   timeStrings: [],
@@ -18,7 +20,7 @@ export const mutations = {
   emptyTimeString: (state) => state.timeStrings = [],
 }
 
-const client = new TimeServiceClient("http://localhost:8091", null, null)
+const client = new TimeServiceClient(apiUrl, null, null)
 
 const getCurrentTimePromise = () => {
   return new Promise((resolve, reject) => {

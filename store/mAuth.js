@@ -9,10 +9,10 @@ const ACCESS_TOKEN = 'access_token'
 const REFRESH_TOKEN = 'refresh_token' //also grant_type
 const AUTHORIZATION_CODE = 'authorization_code'
 
-const keycloakUrl = 'http://localhost:8081'
-const realm = 'find-psy'
-const client = 'manager'
-const clientSecret = 'MEsxZND0uTmkhVJzmU3tcQDPWzwVflmk'
+const keycloakUrl = process.env.KEYCLOAK_URL
+const realm = process.env.REALM
+const client = process.env.CLIENT
+const clientSecret = process.env.CLIENT_SECRET
 
 export const state = () => ({
   kcIdpHint: null,

@@ -11,7 +11,7 @@ services:
       dockerfile: Dockerfile
     image: timurkash/grpc-web-example-envoy
     ports:
-      - "8091:8080"
+      - "8092:8080"
     links:
       - time-server
     networks:
