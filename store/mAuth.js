@@ -1,7 +1,6 @@
 import axios from "axios";
-import {generateCodeChallengeFromVerifier, generateCodeVerifier} from "assets/funcs/pkce";
-import {generateUUID} from "assets/funcs/uuid";
-import {getParams, getUri} from "assets/funcs/common";
+import {generateCodeVerifier} from "assets/auth/pkce";
+import {getParams, getUri, parseToken, getLoginUrl, getKeycloakUrl} from "assets/auth/common";
 
 const KC_IDP_HINT = 'kc_idp_hint'
 const CODE_VERIFIER = 'code_verifier'
@@ -9,42 +8,35 @@ const ACCESS_TOKEN = 'access_token'
 const REFRESH_TOKEN = 'refresh_token' //also grant_type
 const AUTHORIZATION_CODE = 'authorization_code'
 
-const keycloakUrl = process.env.KEYCLOAK_URL
-const realm = process.env.REALM
 const client = process.env.CLIENT
 const clientSecret = process.env.CLIENT_SECRET
 
 export const state = () => ({
   kcIdpHint: null,
-  loggedIn: false,
   loginUrl: null,
   accessToken: null,
-  accessTokenParsed: {},
+  userInfo: null,
   refreshToken: null,
 })
 
 export const getters = {
   kcIdpHint: state => state.kcIdpHint,
-  loggedIn: state => state.loggedIn,
   accessToken: state => state.accessToken,
-  accessTokenParsed: state => state.accessTokenParsed,
+  userInfo: state => state.userInfo,
   refreshToken: state => state.refreshToken,
   loginUrl: state => state.loginUrl,
 }
 
 export const mutations = {
   setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
-  setLoggedIn: (state, loggedIn) => state.loggedIn = loggedIn,
   setTokens: (state, {accessToken, refreshToken}) => {
-    state.loggedIn = true
     state.accessToken = accessToken
-    state.accessTokenParsed = parseToken(accessToken)
+    state.userInfo = parseToken(accessToken)
     state.refreshToken = refreshToken
   },
   setLoggedOff: (state) => {
-    state.loggedIn = false
     state.accessToken = null
-    state.accessTokenParsed = {}
+    state.userInfo = null
     state.refreshToken = null
   },
   setLoginUrl: (state, loginUrl) => state.loginUrl = loginUrl,
@@ -54,26 +46,6 @@ function getString(params) {
   return Object.keys(params)
     .map((key) => `${key}=${encodeURIComponent(params[key])}`)
     .join('&')
-}
-
-function parseToken(token) {
-  let base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-  let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  return JSON.parse(jsonPayload);
-}
-
-function getKeycloakUrl(route) {
-  return `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/${route}`
-}
-
-export async function getLoginUrl(redirectUrl, socialNet, codeVerifier) {
-  let state = generateUUID()
-  let nonce = generateUUID()
-  let codeChallenge = await generateCodeChallengeFromVerifier(codeVerifier)
-  let url = getKeycloakUrl('auth')
-  return `${url}?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${socialNet}`
 }
 
 export const actions = {
@@ -92,7 +64,7 @@ export const actions = {
   async mounted({state, dispatch}){
     await dispatch('getTokens')
     let pathnameSearch = `${location.pathname}${location.search}`
-    if (state.loggedIn) {
+    if (state.userInfo) {
       await this.$router.push(pathnameSearch)
     } else {
       let params = getParams(location.hash)
@@ -151,7 +123,7 @@ export const actions = {
       })
       dispatch('setCookies', data)
     } catch (err) {
-      commit('setLoggedIn', false)
+      commit('setLoggedOff')
       console.error(err)
     }
   },
@@ -160,7 +132,7 @@ export const actions = {
       maxAge: 2592000,
     })
     let codeVerifier = generateCodeVerifier()
-    let loginUrl = await getLoginUrl(redirectUri, socialNet, codeVerifier)
+    let loginUrl = await getLoginUrl(client, redirectUri, socialNet, codeVerifier)
     console.log(loginUrl)
     commit('setLoginUrl', loginUrl)
     this.$cookies.set(CODE_VERIFIER, codeVerifier, {
@@ -223,6 +195,8 @@ export const actions = {
       dispatch('delCookies')
       return data
     } catch (err) {
+      commit('setLoggedOff')
+      dispatch('delCookies')
       console.error(err)
     }
   },

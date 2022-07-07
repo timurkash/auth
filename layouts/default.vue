@@ -1,7 +1,7 @@
 <script>
 import {ITEMS} from '/assets/consts/items'
 import {mapGetters} from "vuex";
-import {getUri} from "assets/funcs/common";
+import {getUri} from "assets/auth/common";
 
 export default {
   name: 'DefaultLayout',
@@ -19,8 +19,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      loggedIn: 'mAuth/loggedIn',
-      accessTokenParsed: 'mAuth/accessTokenParsed',
+      userInfo: 'mAuth/userInfo',
       kcIdpHint: 'mAuth/kcIdpHint',
       loginUrl: 'mAuth/loginUrl',
     })
@@ -108,13 +107,13 @@ export default {
       </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
-      <div v-if="loggedIn">
-        <img :src="accessTokenParsed.picture" alt="picture" class="picture" @click="toLogInfo">
+      <div v-if="userInfo">
+        <img :src="userInfo.picture" alt="picture" class="picture" @click="toLogInfo">
       </div>
-      <v-btn v-if="!loggedIn" icon @click="login">
+      <v-btn v-if="!userInfo" icon @click="login">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-btn v-if="loggedIn" icon @click="logout">
+      <v-btn v-if="userInfo" icon @click="logout">
         <v-icon>mdi-arrow-right</v-icon>
       </v-btn>
     </v-app-bar>

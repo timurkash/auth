@@ -1,5 +1,5 @@
 <script>
-import {getUri,} from '/assets/funcs/common'
+import {getUri,} from '/assets/auth/common'
 import {mapGetters} from "vuex"
 
 export default {
@@ -10,9 +10,8 @@ export default {
   }),
   computed: {
     ...mapGetters({
-      loggedIn: 'mAuth/loggedIn',
       accessToken: 'mAuth/accessToken',
-      accessTokenParsed: 'mAuth/accessTokenParsed',
+      userInfo: 'mAuth/userInfo',
       loginUrl: 'mAuth/loginUrl',
     })
   },
@@ -24,7 +23,7 @@ export default {
     await this.$store.dispatch('mAuth/mounted')
     // await this.$store.dispatch('mAuth/getTokens')
     // let pathnameSearch = `${location.pathname}${location.search}`
-    // if (this.loggedIn) {
+    // if (this.userInfo) {
     //   await this.$router.push({
     //     path: pathnameSearch,
     //   })
@@ -61,21 +60,21 @@ export default {
   <div>
     <v-row>
       <v-col class="text-center">
-        <v-btn color="primary" @click="login('google')" v-show="!loggedIn">Google</v-btn>
-        <v-btn color="primary" @click="login('facebook')" v-show="!loggedIn">Facebook</v-btn>
-        <div v-if="loggedIn">
+        <v-btn color="primary" @click="login('google')" v-show="!userInfo">Google</v-btn>
+        <v-btn color="primary" @click="login('facebook')" v-show="!userInfo">Facebook</v-btn>
+        <div v-if="userInfo">
           <h2>UserInfo</h2>
           <v-container>
             <v-card width="100">
-              <v-img :src="accessTokenParsed.picture"/>
+              <v-img :src="userInfo.picture"/>
             </v-card>
             <h3>Name</h3>
-            <p>{{accessTokenParsed.name}}</p>
+            <p>{{userInfo.name}}</p>
             <h3>UserType</h3>
-            <p>{{accessTokenParsed.user_type}}</p>
+            <p>{{userInfo.user_type}}</p>
             <h3>Roles</h3>
             <span class="role"
-                  v-for="item in accessTokenParsed.realm_access.roles"
+                  v-for="item in userInfo.realm_access.roles"
                   v-if="item.endsWith('-admin')"
             >
               {{item}}
@@ -84,14 +83,14 @@ export default {
             <p>{{ nodeEnv }}::{{ keycloakUrl }}</p>
             <h3>AccessToken</h3>
             <v-textarea :value="accessToken" />
-            <!--            <h3>AccessTokenParsed</h3>-->
-<!--            <p>{{ accessTokenParsed }}</p>-->
+            <!--            <h3>userInfo</h3>-->
+<!--            <p>{{ userInfo }}</p>-->
           </v-container>
           <!--          <div>-->
-          <!--            <img :src="accessTokenParsed.picture" alt="picture" class="picture">-->
+          <!--            <img :src="userInfo.picture" alt="picture" class="picture">-->
           <!--          </div>-->
           <!--          <v-card max-width="100" class="mx-auto my-12">-->
-          <!--            <v-img :src="accessTokenParsed.picture"/>-->
+          <!--            <v-img :src="userInfo.picture"/>-->
           <!--          </v-card>-->
           <!--          <h3>AccessToken</h3>-->
           <!--          <p>{{ accessToken }}</p>-->
