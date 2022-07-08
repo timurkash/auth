@@ -18,6 +18,7 @@ export const state = () => ({
   kcIdpHint: null,
   loginUrl: null,
   accessToken: null,
+  metadata: null,
   userInfo: null,
   refreshToken: null,
 })
@@ -25,6 +26,7 @@ export const state = () => ({
 export const getters = {
   kcIdpHint: state => state.kcIdpHint,
   accessToken: state => state.accessToken,
+  metadata: state => state.metadata,
   userInfo: state => state.userInfo,
   refreshToken: state => state.refreshToken,
   loginUrl: state => state.loginUrl,
@@ -34,11 +36,13 @@ export const mutations = {
   setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
   setTokens: (state, {accessToken, refreshToken}) => {
     state.accessToken = accessToken
+    state.metadata = {authorization: `Bearer ${accessToken}`}
     state.userInfo = parseToken(accessToken)
     state.refreshToken = refreshToken
   },
   setLoggedOff: (state) => {
     state.accessToken = null
+    state.metadata = null
     state.userInfo = null
     state.refreshToken = null
   },

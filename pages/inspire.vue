@@ -10,12 +10,17 @@ export default {
       timeStrings: 'mTime/timeStrings',
     })
   },
-  async mounted() {
-    await this.$store.dispatch('mAuth/mounted')
-  },
   methods: {
     getTime() {
-      this.$store.dispatch('mTime/getTime')
+      const length = 10
+      let result = '';
+      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+          charactersLength));
+      }
+      this.$store.dispatch('mTime/getTime', result)
     },
     empty() {
       this.$store.commit('mTime/emptyTimeString')
@@ -32,15 +37,15 @@ export default {
       </v-col>
     </v-row>
     <v-row class="justify-center">
-<!--      <v-col class="justify-center">-->
-<!--        <div>-->
-          <img
-            src="/v.png"
-            alt="Vuetify.js"
-            class="mb-5"
-          />
-<!--        </div>-->
-<!--      </v-col>-->
+      <!--      <v-col class="justify-center">-->
+      <!--        <div>-->
+      <img
+        src="/v.png"
+        alt="Vuetify.js"
+        class="mb-5"
+      />
+      <!--        </div>-->
+      <!--      </v-col>-->
     </v-row>
     <v-row>
       <v-col class="text-center">
@@ -69,8 +74,8 @@ export default {
 </template>
 
 <style lang="scss">
-  //img {
-  //  align-items: center;
-  //}
+//img {
+//  align-items: center;
+//}
 
 </style>

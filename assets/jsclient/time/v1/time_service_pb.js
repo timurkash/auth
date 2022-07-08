@@ -97,7 +97,7 @@ proto.time.v1.GetCurrentTimeRequest.prototype.toObject = function(opt_includeIns
  */
 proto.time.v1.GetCurrentTimeRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-
+    dump: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -134,6 +134,10 @@ proto.time.v1.GetCurrentTimeRequest.deserializeBinaryFromReader = function(msg, 
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDump(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -163,6 +167,31 @@ proto.time.v1.GetCurrentTimeRequest.prototype.serializeBinary = function() {
  */
 proto.time.v1.GetCurrentTimeRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getDump();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string dump = 1;
+ * @return {string}
+ */
+proto.time.v1.GetCurrentTimeRequest.prototype.getDump = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.time.v1.GetCurrentTimeRequest} returns this
+ */
+proto.time.v1.GetCurrentTimeRequest.prototype.setDump = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
