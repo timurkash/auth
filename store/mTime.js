@@ -36,7 +36,6 @@ const getCurrentTimePromise = (metadata, dump) => {
 export const actions = {
   async getTime({rootState, commit}, dump) {
     const metadata = rootState.mAuth.metadata
-    console.log(metadata)
     try {
       const response = await getCurrentTimePromise(metadata, dump)
       commit('unshiftTimeString', response.getCurrentTime())

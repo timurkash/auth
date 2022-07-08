@@ -18,9 +18,7 @@ export default {
   async mounted() {
     this.keycloakUrl = process.env.KEYCLOAK_URL
     this.nodeEnv = process.env.NODE_ENV
-    console.log('process.env')
-    console.log(process.env)
-    await this.$store.dispatch('mAuth/mounted')
+    // await this.$store.dispatch('mAuth/mounted')
     // await this.$store.dispatch('mAuth/getTokens')
     // let pathnameSearch = `${location.pathname}${location.search}`
     // if (this.userInfo) {

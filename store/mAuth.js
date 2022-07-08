@@ -139,7 +139,6 @@ export const actions = {
     })
     let codeVerifier = generateCodeVerifier()
     let loginUrl = await getLoginUrl(client, redirectUri, socialNet, codeVerifier)
-    console.log(loginUrl)
     commit('setLoginUrl', loginUrl)
     this.$cookies.set(CODE_VERIFIER, codeVerifier, {
       maxAge: 60,
@@ -180,7 +179,7 @@ export const actions = {
   async logout({commit, dispatch}) {
     let refreshToken = this.$cookies.get(REFRESH_TOKEN)
     if (!refreshToken) {
-      console.log(`cookie ${REFRESH_TOKEN} is not set`)
+      console.warn(`cookie ${REFRESH_TOKEN} is not set`)
       commit('setLoggedOff')
       return
     }

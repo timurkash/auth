@@ -37,7 +37,6 @@ export default {
           redirectUri: getUri(location),
           socialNet: this.kcIdpHint,
         })
-        console.log(this.loginUrl)
         window.location.href = this.loginUrl
       } else {
         await this.toLogInfo()
