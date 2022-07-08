@@ -130,6 +130,7 @@ export const actions = {
   async setCodeVerifier({state, commit}, {redirectUri, socialNet}) {
     this.$cookies.set(KC_IDP_HINT, socialNet, {
       maxAge: 2592000,
+      sameSite: true,
     })
     let codeVerifier = generateCodeVerifier()
     let loginUrl = await getLoginUrl(client, redirectUri, socialNet, codeVerifier)
