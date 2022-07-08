@@ -7,6 +7,9 @@ const CODE_VERIFIER = 'code_verifier'
 const ACCESS_TOKEN = 'access_token'
 const REFRESH_TOKEN = 'refresh_token' //also grant_type
 const AUTHORIZATION_CODE = 'authorization_code'
+const HEADER = {
+  'content-type': 'application/x-www-form-urlencoded',
+}
 
 const client = process.env.CLIENT
 const clientSecret = process.env.CLIENT_SECRET
@@ -49,17 +52,36 @@ function getString(params) {
 }
 
 export const actions = {
-  async getKcIdpHint({commit}) {
+  getKcIdpHint({commit}) {
     let kcIdpHint = this.$cookies.get(KC_IDP_HINT)
     commit('setKcIdpHint', kcIdpHint)
   },
-  async setCookies({}, data) {
+  setCookies({}, data) {
     this.$cookies.set(ACCESS_TOKEN, data.access_token, {maxAge: data.expires_in})
     this.$cookies.set(REFRESH_TOKEN, data.refresh_token, {maxAge: data.refresh_expires_in})
   },
-  async delCookies({}) {
+  delCookies({}) {
     this.$cookies.remove(ACCESS_TOKEN)
     this.$cookies.remove(REFRESH_TOKEN)
+  },
+  checkRefreshToken({commit}) {
+    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
+    if (!refreshToken) {
+      commit('setLoggedOff')
+    }
+  },
+  getTokens({commit, dispatch}) {
+    let accessToken = this.$cookies.get(ACCESS_TOKEN)
+    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
+    if (accessToken) {
+      commit('setTokens', {accessToken, refreshToken})
+      return
+    }
+    if (refreshToken) {
+      dispatch('refreshJwt', refreshToken)
+      return
+    }
+    commit('setLoggedOff')
   },
   async mounted({state, dispatch}){
     await dispatch('getTokens')
@@ -76,25 +98,6 @@ export const actions = {
         })
       }
     }
-  },
-  async checkRefreshToken({commit}) {
-    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    if (!refreshToken) {
-      commit('setLoggedOff')
-    }
-  },
-  async getTokens({commit, dispatch}) {
-    let accessToken = this.$cookies.get(ACCESS_TOKEN)
-    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    if (accessToken) {
-      commit('setTokens', {accessToken, refreshToken})
-      return
-    }
-    if (refreshToken) {
-      dispatch('refreshJwt', refreshToken)
-      return
-    }
-    commit('setLoggedOff')
   },
   async refreshJwt({commit, dispatch}, refreshToken) {
     if (!refreshToken) {
@@ -115,7 +118,7 @@ export const actions = {
           client_secret: clientSecret,
           refresh_token: refreshToken,
         }),
-        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        headers: HEADER,
       })
       commit('setTokens', {
         accessToken: data.access_token,
@@ -160,7 +163,7 @@ export const actions = {
           redirect_uri: redirectUri,
           code_verifier: codeVerifier,
         }),
-        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        headers: HEADER,
       })
       commit('setTokens', {
         accessToken: data.access_token,
@@ -188,9 +191,7 @@ export const actions = {
           client_secret: clientSecret,
           refresh_token: refreshToken,
         }),
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-        },
+        headers: HEADER,
       })
       commit('setLoggedOff')
       dispatch('delCookies')
