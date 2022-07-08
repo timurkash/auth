@@ -52,10 +52,6 @@ function getString(params) {
 }
 
 export const actions = {
-  getKcIdpHint({commit}) {
-    let kcIdpHint = this.$cookies.get(KC_IDP_HINT)
-    commit('setKcIdpHint', kcIdpHint)
-  },
   setCookies({}, data) {
     this.$cookies.set(ACCESS_TOKEN, data.access_token, {maxAge: data.expires_in})
     this.$cookies.set(REFRESH_TOKEN, data.refresh_token, {maxAge: data.refresh_expires_in})
@@ -83,8 +79,10 @@ export const actions = {
     }
     commit('setLoggedOff')
   },
-  async mounted({state, dispatch}){
+  async mounted({state, commit, dispatch}){
+    commit('setKcIdpHint', this.$cookies.get(KC_IDP_HINT))
     await dispatch('getTokens')
+    setInterval(() => dispatch('checkRefreshToken'), 60000);
     let pathnameSearch = `${location.pathname}${location.search}`
     if (state.userInfo) {
       await this.$router.push(pathnameSearch)

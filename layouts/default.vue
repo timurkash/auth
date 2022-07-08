@@ -24,12 +24,8 @@ export default {
       loginUrl: 'mAuth/loginUrl',
     })
   },
-  async mounted() {
-    await this.$store.dispatch('mAuth/mounted')
-    await this.$store.dispatch('mAuth/getKcIdpHint')
-    let that = this
-    setInterval(() => that.$store.dispatch('mAuth/checkRefreshToken'), 60000);
-    console.log('--------default mounted-----------')
+  mounted() {
+    this.$store.dispatch('mAuth/mounted')
   },
   methods: {
     logout: function () {
@@ -50,9 +46,6 @@ export default {
     toLogInfo: async function () {
       await this.$router.push('/loginfo')
     },
-    // checkRefreshToken: function () {
-    //   setInterval(this.$store.dispatch('mAuth/checkRefreshToken'), 5000);
-    // },
   },
 }
 </script>
