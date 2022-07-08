@@ -25,6 +25,7 @@ export default {
     })
   },
   async mounted() {
+    await this.$store.dispatch('mAuth/mounted')
     await this.$store.dispatch('mAuth/getKcIdpHint')
     let that = this
     setInterval(() => that.$store.dispatch('mAuth/checkRefreshToken'), 60000);
@@ -40,6 +41,7 @@ export default {
           redirectUri: getUri(location),
           socialNet: this.kcIdpHint,
         })
+        console.log(this.loginUrl)
         window.location.href = this.loginUrl
       } else {
         await this.toLogInfo()

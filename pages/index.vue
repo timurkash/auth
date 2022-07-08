@@ -11,13 +11,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      // loginUrl: 'mAuth/loginUrl',
     })
-  },
-  async mounted() {
-    await this.$store.dispatch('mAuth/mounted')
-  },
-  methods: {
   },
 }
 </script>
