@@ -1,6 +1,6 @@
 <script>
-import NuxtLogo from '~/components/logo/NuxtLogo'
-import VuetifyLogo from '~/components/logo/VuetifyLogo'
+import NuxtLogo from '/components/logo/NuxtLogo'
+import VuetifyLogo from '/components/logo/VuetifyLogo'
 import {mapGetters} from "vuex"
 
 export default {

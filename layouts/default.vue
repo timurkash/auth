@@ -1,7 +1,7 @@
 <script>
-import {ITEMS} from '/assets/consts/items'
+import {ITEMS} from 'assets/consts/items'
 import {mapGetters} from "vuex";
-import {getUri} from "assets/auth/common";
+import {getUri} from 'assets/auth/common';
 
 export default {
   name: 'DefaultLayout',

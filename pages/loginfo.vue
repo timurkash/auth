@@ -1,5 +1,5 @@
 <script>
-import {getUri,} from '/assets/auth/common'
+import {getUri} from 'assets/auth/common'
 import {mapGetters} from "vuex"
 
 export default {

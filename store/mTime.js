@@ -1,5 +1,5 @@
-import {TimeServiceClient} from "~/assets/jsclient/time/v1/time_service_grpc_web_pb";
-import {GetCurrentTimeRequest} from "~/assets/jsclient/time/v1/time_service_pb";
+import {TimeServiceClient} from 'assets/jsclient/time/v1/time_service_grpc_web_pb'
+import {GetCurrentTimeRequest} from 'assets/jsclient/time/v1/time_service_pb'
 
 const apiUrl = process.env.API_URL
 
