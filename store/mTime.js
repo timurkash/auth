@@ -1,4 +1,4 @@
-import {TimeServiceClient} from 'assets/jsclient/time/v1/time_service_grpc_web_pb'
+import {TimeServicePromiseClient} from 'assets/jsclient/time/v1/time_service_grpc_web_pb'
 import {GetCurrentTimeRequest} from 'assets/jsclient/time/v1/time_service_pb'
 
 const apiUrl = process.env.API_URL
@@ -20,27 +20,22 @@ export const mutations = {
   emptyTimeString: (state) => state.timeStrings = [],
 }
 
-const client = new TimeServiceClient(apiUrl, null, null)
-
-const getCurrentTimePromise = (metadata, dump) => {
-  return new Promise((resolve, reject) => {
-    const getCurrentTimeRequest = new GetCurrentTimeRequest()
-    getCurrentTimeRequest.setDump(dump)
-    client.getCurrentTime(getCurrentTimeRequest, metadata, (err, response) => {
-      if (err) return reject(err)
-      resolve(response)
-    })
-  })
-}
+const client = new TimeServicePromiseClient(apiUrl, null, null)
 
 export const actions = {
   async getTime({rootState, commit}, dump) {
     const metadata = rootState.mAuth.metadata
-    try {
-      const response = await getCurrentTimePromise(metadata, dump)
-      commit('unshiftTimeString', response.getCurrentTime())
-    } catch (err) {
-      console.error(err)
+    if (metadata) {
+      try {
+        const getCurrentTimeRequest = new GetCurrentTimeRequest().
+          setDump(dump)
+        const response = await client.getCurrentTime(getCurrentTimeRequest, metadata)
+        commit('unshiftTimeString', response.getCurrentTime())
+      } catch (err) {
+        console.error(err)
+      }
+    } else {
+      console.error('not logged')
     }
   },
 }
