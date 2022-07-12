@@ -39,11 +39,11 @@ export default {
     // }
   },
   methods: {
-    login: async function (socialNet) {
-      if (socialNet == 'google') {
+    login: async function (social) {
+      if (social == 'google') {
         await this.$store.dispatch('mAuth/setCodeVerifier', {
           redirectUri: getUri(location),
-          socialNet: socialNet,
+          social: social,
         })
         window.location.href = this.loginUrl
       } else {

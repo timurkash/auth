@@ -35,7 +35,7 @@ export default {
       if (this.kcIdpHint) {
         await this.$store.dispatch('mAuth/setCodeVerifier', {
           redirectUri: getUri(location),
-          socialNet: this.kcIdpHint,
+          social: this.kcIdpHint,
         })
         window.location.href = this.loginUrl
       } else {
