@@ -1,206 +1,107 @@
-import axios from "axios";
 import {generateCodeVerifier} from "assets/auth/pkce";
-import {getParams, getUri, parseToken, getLoginUrl, getKeycloakUrl} from "assets/auth/common";
-
-const KC_IDP_HINT = 'kc_idp_hint'
-const CODE_VERIFIER = 'code_verifier'
-const ACCESS_TOKEN = 'access_token'
-const REFRESH_TOKEN = 'refresh_token' //also grant_type
-const AUTHORIZATION_CODE = 'authorization_code'
-const HEADER = {
-  'content-type': 'application/x-www-form-urlencoded',
-}
-
-const client = process.env.CLIENT
-const clientSecret = process.env.CLIENT_SECRET
+import {getParams, getUri, parseToken} from "assets/auth/common";
+import {setTokens, getRefreshToken, delTokens,
+  setKcIdpHint, getKcIdpHint,
+  setCodeVerifier, getCodeVerifier} from 'assets/auth/cookies'
+import {getJwt, logout, getLoginUrl} from 'assets/auth/keycloak'
+import {refreshToken} from 'assets/auth/refresh'
 
 export const state = () => ({
   kcIdpHint: null,
   loginUrl: null,
   accessToken: null,
   metadata: null,
-  userInfo: null,
+  tokenInfo: null,
   refreshToken: null,
 })
 
 export const getters = {
   kcIdpHint: state => state.kcIdpHint,
+  loginUrl: state => state.loginUrl,
   accessToken: state => state.accessToken,
   metadata: state => state.metadata,
-  userInfo: state => state.userInfo,
+  tokenInfo: state => state.tokenInfo,
   refreshToken: state => state.refreshToken,
-  loginUrl: state => state.loginUrl,
 }
 
 export const mutations = {
   setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
-  setTokens: (state, {accessToken, refreshToken}) => {
-    state.accessToken = accessToken
-    state.metadata = {authorization: `Bearer ${accessToken}`}
-    state.userInfo = parseToken(accessToken)
-    state.refreshToken = refreshToken
+  setLoginUrl: (state, loginUrl) => state.loginUrl = loginUrl,
+  setTokens: (state, data) => {
+    state.accessToken = data.access_token
+    state.metadata = {authorization: `Bearer ${data.access_token}`}
+    state.tokenInfo = parseToken(data.access_token)
+    state.refreshToken = data.refresh_token
   },
   setLoggedOff: (state) => {
     state.accessToken = null
     state.metadata = null
-    state.userInfo = null
+    state.tokenInfo = null
     state.refreshToken = null
   },
-  setLoginUrl: (state, loginUrl) => state.loginUrl = loginUrl,
-}
-
-function getString(params) {
-  return Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-    .join('&')
 }
 
 export const actions = {
-  setCookies({}, data) {
-    this.$cookies.set(ACCESS_TOKEN, data.access_token, {maxAge: data.expires_in})
-    this.$cookies.set(REFRESH_TOKEN, data.refresh_token, {maxAge: data.refresh_expires_in})
-  },
-  delCookies({}) {
-    this.$cookies.remove(ACCESS_TOKEN)
-    this.$cookies.remove(REFRESH_TOKEN)
-  },
   checkRefreshToken({commit}) {
-    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    if (!refreshToken) {
+    if (!getRefreshToken(this.$cookies)) {
       commit('setLoggedOff')
     }
   },
-  getTokens({commit, dispatch}) {
-    let accessToken = this.$cookies.get(ACCESS_TOKEN)
-    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    if (accessToken) {
-      commit('setTokens', {accessToken, refreshToken})
-      return
-    }
-    if (refreshToken) {
-      dispatch('refreshJwt', refreshToken)
-      return
-    }
-    commit('setLoggedOff')
-  },
   async mounted({state, commit, dispatch}){
-    commit('setKcIdpHint', this.$cookies.get(KC_IDP_HINT))
-    await dispatch('getTokens')
+    commit('setKcIdpHint', getKcIdpHint(this.$cookies))
     setInterval(() => dispatch('checkRefreshToken'), 60000);
-    let pathnameSearch = `${location.pathname}${location.search}`
-    if (state.userInfo) {
-      await this.$router.push(pathnameSearch)
-    } else {
-      let params = getParams(location.hash)
-      await this.$router.push(pathnameSearch)
-      if (params.code) {
-        await dispatch('getJwt', {
-          code: params.code,
-          redirectUri: getUri(location),
-        })
+    const logged = await refreshToken(commit, this.$cookies)
+    if (!logged) {
+      const pathnameSearch = `${location.pathname}${location.search}`
+      if (state.accessToken) {
+        await this.$router.push(pathnameSearch)
+      } else {
+        let params = getParams(location.hash)
+        await this.$router.push(pathnameSearch)
+        if (params.code) {
+          await dispatch('getJwt', {
+            code: params.code,
+            redirectUri: getUri(location),
+          })
+        }
       }
     }
   },
-  async refreshJwt({commit, dispatch}, refreshToken) {
-    if (!refreshToken) {
-      refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    }
-    if (!refreshToken) {
-      console.warn(`cookie ${REFRESH_TOKEN} is not set`)
-      commit('setLoggedOff')
-      return
-    }
-    try {
-      let {data} = await axios({
-        url: getKeycloakUrl('token'),
-        method: 'POST',
-        data: getString({
-          grant_type: REFRESH_TOKEN,
-          client_id: client,
-          client_secret: clientSecret,
-          refresh_token: refreshToken,
-        }),
-        headers: HEADER,
-      })
-      commit('setTokens', {
-        accessToken: data.access_token,
-        refreshToken: data.refresh_token,
-      })
-      dispatch('setCookies', data)
-    } catch (err) {
-      commit('setLoggedOff')
-      console.error(err)
-    }
-  },
   async setCodeVerifier({state, commit}, {redirectUri, social}) {
-    this.$cookies.set(KC_IDP_HINT, social, {
-      maxAge: 2592000,
-      sameSite: true,
-    })
+    setKcIdpHint(this.$cookies, social)
     let codeVerifier = generateCodeVerifier()
-    let loginUrl = await getLoginUrl(client, redirectUri, social, codeVerifier)
+    let loginUrl = await getLoginUrl(redirectUri, social, codeVerifier)
     commit('setLoginUrl', loginUrl)
-    this.$cookies.set(CODE_VERIFIER, codeVerifier, {
-      maxAge: 60,
-      sameSite: true,
-    })
+    setCodeVerifier(this.$cookies, codeVerifier)
   },
   async getJwt({commit, dispatch}, {code, redirectUri}) {
-    let codeVerifier = this.$cookies.get(CODE_VERIFIER)
-    this.$cookies.remove(CODE_VERIFIER)
+    const codeVerifier = getCodeVerifier(this.$cookies)
     if (!codeVerifier) {
-      console.warn(`cookie ${CODE_VERIFIER} is not set`)
+      console.error('cookie CODE_VERIFIER is not set')
       return
     }
     try {
-      let {data} = await axios({
-        url: getKeycloakUrl('token'),
-        method: 'POST',
-        data: getString({
-          code: code,
-          grant_type: AUTHORIZATION_CODE,
-          client_id: client,
-          client_secret: clientSecret,
-          redirect_uri: redirectUri,
-          code_verifier: codeVerifier,
-        }),
-        headers: HEADER,
-      })
-      commit('setTokens', {
-        accessToken: data.access_token,
-        refreshToken: data.refresh_token,
-      })
-      dispatch('setCookies', data)
+      const data = await getJwt(code, redirectUri, codeVerifier)
+      commit('setTokens', data)
+      setTokens(this.$cookies, data)
     } catch (err) {
       commit('setLoggedOff')
       console.error(err)
     }
   },
-  async logout({commit, dispatch}) {
-    let refreshToken = this.$cookies.get(REFRESH_TOKEN)
-    if (!refreshToken) {
-      console.warn(`cookie ${REFRESH_TOKEN} is not set`)
+  async logout({commit}) {
+    const refreshToken = getRefreshToken(this.$cookies)
+    if (refreshToken) {
+      try {
+        await logout(refreshToken)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        commit('setLoggedOff')
+        delTokens(this.$cookies)
+      }
+    } else {
       commit('setLoggedOff')
-      return
-    }
-    try {
-      let {data} = await axios({
-        url: getKeycloakUrl('logout'),
-        method: 'POST',
-        data: getString({
-          client_id: client,
-          client_secret: clientSecret,
-          refresh_token: refreshToken,
-        }),
-        headers: HEADER,
-      })
-      commit('setLoggedOff')
-      dispatch('delCookies')
-      return data
-    } catch (err) {
-      commit('setLoggedOff')
-      dispatch('delCookies')
-      console.error(err)
     }
   },
 }

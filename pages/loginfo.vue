@@ -11,7 +11,7 @@ export default {
   computed: {
     ...mapGetters({
       accessToken: 'mAuth/accessToken',
-      userInfo: 'mAuth/userInfo',
+      tokenInfo: 'mAuth/tokenInfo',
       loginUrl: 'mAuth/loginUrl',
     })
   },
@@ -21,7 +21,7 @@ export default {
     // await this.$store.dispatch('mAuth/mounted')
     // await this.$store.dispatch('mAuth/getTokens')
     // let pathnameSearch = `${location.pathname}${location.search}`
-    // if (this.userInfo) {
+    // if (this.tokenInfo) {
     //   await this.$router.push({
     //     path: pathnameSearch,
     //   })
@@ -58,21 +58,21 @@ export default {
   <div>
     <v-row>
       <v-col class="text-center">
-        <v-btn color="primary" @click="login('google')" v-show="!userInfo">Google</v-btn>
-        <v-btn color="primary" @click="login('facebook')" v-show="!userInfo">Facebook</v-btn>
-        <div v-if="userInfo">
-          <h2>UserInfo</h2>
+        <v-btn color="primary" @click="login('google')" v-show="!tokenInfo">Google</v-btn>
+        <v-btn color="primary" @click="login('facebook')" v-show="!tokenInfo">Facebook</v-btn>
+        <div v-if="tokenInfo">
+          <h2>tokenInfo</h2>
           <v-container>
             <v-card width="100">
-              <v-img :src="userInfo.picture"/>
+              <v-img :src="tokenInfo.picture"/>
             </v-card>
             <h3>Name</h3>
-            <p>{{userInfo.name}}</p>
+            <p>{{tokenInfo.name}}</p>
             <h3>UserType</h3>
-            <p>{{userInfo.user_type}}</p>
+            <p>{{tokenInfo.user_type}}</p>
             <h3>Roles</h3>
             <span class="role"
-                  v-for="item in userInfo.realm_access.roles"
+                  v-for="item in tokenInfo.realm_access.roles"
                   v-if="item.endsWith('-admin')"
             >
               {{item}}
@@ -81,14 +81,14 @@ export default {
             <p>{{ nodeEnv }}::{{ keycloakUrl }}</p>
             <h3>AccessToken</h3>
             <v-textarea :value="accessToken" />
-            <!--            <h3>userInfo</h3>-->
-<!--            <p>{{ userInfo }}</p>-->
+            <!--            <h3>tokenInfo</h3>-->
+<!--            <p>{{ tokenInfo }}</p>-->
           </v-container>
           <!--          <div>-->
-          <!--            <img :src="userInfo.picture" alt="picture" class="picture">-->
+          <!--            <img :src="tokenInfo.picture" alt="picture" class="picture">-->
           <!--          </div>-->
           <!--          <v-card max-width="100" class="mx-auto my-12">-->
-          <!--            <v-img :src="userInfo.picture"/>-->
+          <!--            <v-img :src="tokenInfo.picture"/>-->
           <!--          </v-card>-->
           <!--          <h3>AccessToken</h3>-->
           <!--          <p>{{ accessToken }}</p>-->

@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userInfo: 'mAuth/userInfo',
+      tokenInfo: 'mAuth/tokenInfo',
       kcIdpHint: 'mAuth/kcIdpHint',
       loginUrl: 'mAuth/loginUrl',
     })
@@ -101,13 +101,13 @@ export default {
       </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
-      <div v-if="userInfo">
-        <img :src="userInfo.picture" alt="picture" class="picture" @click="toLogInfo">
+      <div v-if="tokenInfo">
+        <img :src="tokenInfo.picture" alt="picture" class="picture" @click="toLogInfo">
       </div>
-      <v-btn v-if="!userInfo" icon @click="login">
+      <v-btn v-if="!tokenInfo" icon @click="login">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-btn v-if="userInfo" icon @click="logout">
+      <v-btn v-if="tokenInfo" icon @click="logout">
         <v-icon>mdi-arrow-right</v-icon>
       </v-btn>
     </v-app-bar>
