@@ -1,26 +1,28 @@
 <script>
 import {mapGetters} from 'vuex'
+import {randomString} from 'assets/common/common'
 
 export default {
   // name: 'InspirePage',
   data: () => ({}),
   computed: {
     ...mapGetters({
-      timeString: 'mTime/timeString',
+      // timeString: 'mTime/timeString',
       timeStrings: 'mTime/timeStrings',
+      timeString2: 'mTime/timeString2',
     })
   },
   methods: {
     getTime() {
-      const length = 10
-      let result = '';
-      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let charactersLength = characters.length;
-      for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-          charactersLength));
-      }
-      this.$store.dispatch('mTime/getTime', result)
+      // const length = 10
+      // let result = '';
+      // let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      // let charactersLength = characters.length;
+      // for (let i = 0; i < length; i++) {
+      //   result += characters.charAt(Math.floor(Math.random() *
+      //     charactersLength));
+      // }
+      this.$store.dispatch('mTime/getTime', randomString())
     },
     empty() {
       this.$store.commit('mTime/emptyTimeString')
@@ -31,11 +33,11 @@ export default {
 
 <template>
   <div>
-    <v-row>
-      <v-col class="text-center">
-        <Tutorial/>
-      </v-col>
-    </v-row>
+<!--    <v-row>-->
+<!--      <v-col class="text-center">-->
+<!--        <Tutorial/>-->
+<!--      </v-col>-->
+<!--    </v-row>-->
     <v-row class="justify-center">
       <!--      <v-col class="justify-center">-->
       <!--        <div>-->
@@ -63,6 +65,11 @@ export default {
       <v-col class="text-center">
         <v-btn @click="getTime">Time</v-btn>
         <v-btn @click="empty">Empty</v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="text-center">
+        {{ timeString2 }}
       </v-col>
     </v-row>
     <v-row>

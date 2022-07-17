@@ -21,6 +21,8 @@ var global = (function() {
   return Function('return this')();
 }.call(null));
 
+var timestamp_timestamp_pb = require('../../timestamp/timestamp_pb.js');
+goog.object.extend(proto, timestamp_timestamp_pb);
 goog.exportSymbol('proto.time.v1.GetCurrentTimeRequest', null, global);
 goog.exportSymbol('proto.time.v1.GetCurrentTimeResponse', null, global);
 /**
@@ -227,7 +229,8 @@ proto.time.v1.GetCurrentTimeResponse.prototype.toObject = function(opt_includeIn
  */
 proto.time.v1.GetCurrentTimeResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    currentTime: jspb.Message.getFieldWithDefault(msg, 1, "")
+    currentTime: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    currentTime2: (f = msg.getCurrentTime2()) && timestamp_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -268,6 +271,11 @@ proto.time.v1.GetCurrentTimeResponse.deserializeBinaryFromReader = function(msg,
       var value = /** @type {string} */ (reader.readString());
       msg.setCurrentTime(value);
       break;
+    case 2:
+      var value = new timestamp_timestamp_pb.Timestamp;
+      reader.readMessage(value,timestamp_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setCurrentTime2(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -304,6 +312,14 @@ proto.time.v1.GetCurrentTimeResponse.serializeBinaryToWriter = function(message,
       f
     );
   }
+  f = message.getCurrentTime2();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      timestamp_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
 };
 
 
@@ -322,6 +338,43 @@ proto.time.v1.GetCurrentTimeResponse.prototype.getCurrentTime = function() {
  */
 proto.time.v1.GetCurrentTimeResponse.prototype.setCurrentTime = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional common.Timestamp current_time2 = 2;
+ * @return {?proto.common.Timestamp}
+ */
+proto.time.v1.GetCurrentTimeResponse.prototype.getCurrentTime2 = function() {
+  return /** @type{?proto.common.Timestamp} */ (
+    jspb.Message.getWrapperField(this, timestamp_timestamp_pb.Timestamp, 2));
+};
+
+
+/**
+ * @param {?proto.common.Timestamp|undefined} value
+ * @return {!proto.time.v1.GetCurrentTimeResponse} returns this
+*/
+proto.time.v1.GetCurrentTimeResponse.prototype.setCurrentTime2 = function(value) {
+  return jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.time.v1.GetCurrentTimeResponse} returns this
+ */
+proto.time.v1.GetCurrentTimeResponse.prototype.clearCurrentTime2 = function() {
+  return this.setCurrentTime2(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.time.v1.GetCurrentTimeResponse.prototype.hasCurrentTime2 = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 

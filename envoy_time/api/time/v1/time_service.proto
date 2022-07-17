@@ -4,12 +4,15 @@ package time.v1;
 
 option go_package = "github.com/timurkash/grpc-web-example/api/time/v1";
 
+import "timestamp/timestamp.proto";
+
 message GetCurrentTimeRequest {
   string dump = 1;
 }
 
 message GetCurrentTimeResponse {
   string current_time = 1;
+  common.Timestamp current_time2 = 2;
 }
 
 service TimeService {

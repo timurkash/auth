@@ -11,6 +11,8 @@ import (
 	"time"
 
 	pb "github.com/timurkash/grpc-web-example/time/goclient/time/v1"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	"google.golang.org/grpc"
 )
 
@@ -35,8 +37,10 @@ func (t *timeService) GetCurrentTime(ctx context.Context, req *pb.GetCurrentTime
 		return nil, errors.New("no authorization")
 	}
 	log.Printf("got authorization bearer\n%v\n", bearer[0])
+	now := time.Now()
 	return &pb.GetCurrentTimeResponse{
-		CurrentTime: fmt.Sprintf("%s: %s: %s", test, req.Dump, time.Now().String()),
+		CurrentTime:  fmt.Sprintf("%s: %s: %s", test, req.Dump, now.String()),
+		CurrentTime2: timestamppb.New(now),
 	}, nil
 }
 

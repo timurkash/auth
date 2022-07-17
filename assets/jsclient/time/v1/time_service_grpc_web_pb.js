@@ -15,6 +15,8 @@
 const grpc = {};
 grpc.web = require('grpc-web');
 
+
+var timestamp_timestamp_pb = require('../../timestamp/timestamp_pb.js')
 const proto = {};
 proto.time = {};
 proto.time.v1 = require('./time_service_pb.js');
