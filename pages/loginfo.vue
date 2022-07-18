@@ -1,6 +1,6 @@
 <script>
 import {getUri} from 'assets/auth/common'
-import {mapGetters} from "vuex"
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'InspirePage',
@@ -15,28 +15,10 @@ export default {
       loginUrl: 'mAuth/loginUrl',
     })
   },
-  async mounted() {
-    this.keycloakUrl = process.env.KEYCLOAK_URL
-    this.nodeEnv = process.env.NODE_ENV
-    // await this.$store.dispatch('mAuth/mounted')
-    // await this.$store.dispatch('mAuth/getTokens')
-    // let pathnameSearch = `${location.pathname}${location.search}`
-    // if (this.tokenInfo) {
-    //   await this.$router.push({
-    //     path: pathnameSearch,
-    //   })
-    // } else {
-    //   let params = getParams(location.hash)
-    //   await this.$router.push({
-    //     path: pathnameSearch,
-    //   })
-    //   if (params.code) {
-    //     await this.$store.dispatch('mAuth/getJwt', {
-    //       code: params.code,
-    //       redirectUri: getUri(location),
-    //     })
-    //   }
-    // }
+  watch: {
+    accessToken: async function () {
+      await this.copy()
+    }
   },
   methods: {
     login: async function (social) {
@@ -49,6 +31,16 @@ export default {
       } else {
         alert('nothing but google is supported')
       }
+    },
+    copy: async function () {
+      if (process.env.NODE_ENV == 'development') {
+        await navigator.clipboard.writeText(`{
+\t"Authorization": "Bearer ${this.accessToken}"
+}`)
+      }
+    },
+    forceRefresh: function () {
+      this.$store.dispatch('mAuth/forceRefreshToken')
     },
   },
 }
@@ -77,23 +69,12 @@ export default {
             >
               {{item}}
             </span>
-            <h3>Keycloak URL</h3>
-            <p>{{ nodeEnv }}::{{ keycloakUrl }}</p>
-            <h3>AccessToken</h3>
-            <v-textarea :value="accessToken" />
-            <!--            <h3>tokenInfo</h3>-->
-<!--            <p>{{ tokenInfo }}</p>-->
+            <div class="flex">
+            <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
+            <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
+            </div>
+            <v-textarea :value="accessToken" rows="15" />
           </v-container>
-          <!--          <div>-->
-          <!--            <img :src="tokenInfo.picture" alt="picture" class="picture">-->
-          <!--          </div>-->
-          <!--          <v-card max-width="100" class="mx-auto my-12">-->
-          <!--            <v-img :src="tokenInfo.picture"/>-->
-          <!--          </v-card>-->
-          <!--          <h3>AccessToken</h3>-->
-          <!--          <p>{{ accessToken }}</p>-->
-          <!--          <h3>RefreshToken</h3>-->
-          <!--          <p>{{ refreshToken }}</p>-->
         </div>
       </v-col>
     </v-row>
@@ -107,5 +88,11 @@ img.picture {
 }
 span.role {
   margin: 10px;
+}
+.flex {
+  display: flex;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

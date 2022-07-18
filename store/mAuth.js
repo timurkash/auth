@@ -4,7 +4,7 @@ import {setTokens, getRefreshToken, delTokens,
   setKcIdpHint, getKcIdpHint,
   setCodeVerifier, getCodeVerifier} from 'assets/auth/cookies'
 import {getJwt, logout, getLoginUrl} from 'assets/auth/keycloak'
-import {refreshToken} from 'assets/auth/refresh'
+import {refreshToken, forceRefreshToken} from 'assets/auth/refresh'
 
 export const state = () => ({
   kcIdpHint: null,
@@ -88,6 +88,12 @@ export const actions = {
       commit('setLoggedOff')
       console.error(err)
     }
+  },
+  async refreshToken({commit}) {
+    await refreshToken(commit, this.$cookies)
+  },
+  async forceRefreshToken({commit}) {
+    await forceRefreshToken(commit, this.$cookies)
   },
   async logout({commit}) {
     const refreshToken = getRefreshToken(this.$cookies)

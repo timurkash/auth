@@ -23,3 +23,19 @@ export async function refreshToken(commit, cookies) {
   commit('setLoggedOff')
   return false
 }
+
+export async function forceRefreshToken(commit, cookies) {
+  const {refreshToken} = getTokens(cookies)
+  if (refreshToken) {
+    try {
+      const data = await refreshJwt(refreshToken)
+      commit('setTokens', data)
+      setTokens(cookies, data)
+      return true
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  commit('setLoggedOff')
+  return false
+}
