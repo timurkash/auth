@@ -1,10 +1,16 @@
 version: '3'
 
-volumes:
-  postgres_data:
-      driver: local
-
 services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: timurkash/grpc-web-example-frontend
+    ports:
+      - "3009:3000"
+    networks:
+      - test-backend
+
   envoy:
     build:
       context: envoy_time/envoy
