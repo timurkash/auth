@@ -1,16 +1,21 @@
 import axios from 'axios'
+import {getTokens, setTokens} from "assets/auth/cookies";
 import {generateUUID} from 'assets/auth/common';
 import {generateCodeChallengeFromVerifier} from 'assets/auth/pkce';
 
-const keycloakUrl = process.env.KEYCLOAK_URL
-const realm = process.env.REALM
-const client = process.env.CLIENT
-const clientSecret = process.env.CLIENT_SECRET
+let keycloakUrl, realm, client, clientSecret
 
 const REFRESH_TOKEN = 'refresh_token'
 const AUTHORIZATION_CODE = 'authorization_code'
 const HEADER = {
   'content-type': 'application/x-www-form-urlencoded',
+}
+
+export function setParams(params) {
+  keycloakUrl = params.keycloakUrl
+  realm = params.realm
+  client = params.client
+  clientSecret = params.clientSecret
 }
 
 export function getKeycloakUrl(route) {
@@ -74,4 +79,43 @@ export async function logout(refreshToken) {
     }),
     headers: HEADER,
   })
+}
+
+export async function refreshToken(commit, cookies) {
+  const {accessToken, refreshToken} = getTokens(cookies)
+  if (accessToken) {
+    commit('setTokens', {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
+    return true
+  }
+  if (refreshToken) {
+    try {
+      const data = await refreshJwt(refreshToken)
+      commit('setTokens', data)
+      setTokens(cookies, data)
+      return true
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  commit('setLoggedOff')
+  return false
+}
+
+export async function forceRefreshToken(commit, cookies) {
+  const {refreshToken} = getTokens(cookies)
+  if (refreshToken) {
+    try {
+      const data = await refreshJwt(refreshToken)
+      commit('setTokens', data)
+      setTokens(cookies, data)
+      return true
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  commit('setLoggedOff')
+  return false
 }

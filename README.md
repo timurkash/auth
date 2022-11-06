@@ -21,9 +21,13 @@ dicker-compose up -d
 
 To develop the front, `npm run dev` or `yarn dev`
 
-Environments have to be set
+Environments have to be set in `.env`
+
+for time-server
 
 - API_URL
+
+for keycloak
 - KEYCLOAK_URL
 - REALM
 - CLIENT

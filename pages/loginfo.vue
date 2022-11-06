@@ -3,7 +3,7 @@ import {getUri} from 'assets/auth/common'
 import {mapGetters} from 'vuex'
 
 export default {
-  name: 'InspirePage',
+  name: 'LogInfo',
   data: () => ({
     keycloakUrl: null,
     nodeEnv: null,
@@ -37,6 +37,9 @@ export default {
         await navigator.clipboard.writeText(`{
 \t"Authorization": "Bearer ${this.accessToken}"
 }`)
+        console.log("accessToken copied")
+      } else {
+        console.warn("NODE_ENV is not development")
       }
     },
     forceRefresh: function () {
@@ -60,6 +63,8 @@ export default {
             </v-card>
             <h3>Name</h3>
             <p>{{tokenInfo.name}}</p>
+            <h3>Email</h3>
+            <p>{{tokenInfo.email}}</p>
             <h3>UserType</h3>
             <p>{{tokenInfo.user_type}}</p>
             <h3>Roles</h3>

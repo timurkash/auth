@@ -3,8 +3,7 @@ import {getParams, getUri, parseToken} from "assets/auth/common";
 import {setTokens, getRefreshToken, delTokens,
   setKcIdpHint, getKcIdpHint,
   setCodeVerifier, getCodeVerifier} from 'assets/auth/cookies'
-import {getJwt, logout, getLoginUrl} from 'assets/auth/keycloak'
-import {refreshToken, forceRefreshToken} from 'assets/auth/refresh'
+import {setParams, getJwt, logout, getLoginUrl, refreshToken, forceRefreshToken} from 'assets/auth/keycloak'
 
 export const state = () => ({
   kcIdpHint: null,
@@ -47,7 +46,9 @@ export const actions = {
       commit('setLoggedOff')
     }
   },
-  async mounted({state, commit, dispatch}){
+  async mounted({state, commit, dispatch}, params){
+    setParams(params)
+    // console.log(params)
     commit('setKcIdpHint', getKcIdpHint(this.$cookies))
     setInterval(() => dispatch('checkRefreshToken'), 60000);
     const logged = await refreshToken(commit, this.$cookies)

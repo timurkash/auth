@@ -34,12 +34,22 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    ['@nuxtjs/dotenv',{filename: '.env'}],
+    '@nuxtjs/dotenv',
+    // ['@nuxtjs/dotenv',{filename: './configs/.env.development'}],
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     'cookie-universal-nuxt',
+    ['nuxt-env', {
+      keys: [
+        'API_URL','KEYCLOAK_URL','REALM','CLIENT','CLIENT_SECRET',
+        // Basic usage—equivalent of { key: 'TEST_ENV_VAR' }
+        // { key: 'OTHER_ENV_VAR', default: 'defaultValue' } // Specify a default value
+        // { key: 'THIRD_ENV_VAR', secret: true } // Only inject the var server side
+        // { key: 'ANOTHER_ENV_VAR', name: 'MY_ENV_VAR' } // Rename the variable
+      ]
+    }]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

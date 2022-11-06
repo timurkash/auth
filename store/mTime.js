@@ -12,14 +12,14 @@ export const state = () => ({
 })
 
 export const getters = {
-  timeString: state => state.timeString,
+  // timeString: state => state.timeString,
   timeStrings: state => state.timeStrings,
   timeString2: state => state.timeString2,
 }
 
 export const mutations = {
-  setTimeString: (state, timeString) => state.timeString = timeString,
-  pushTimeString: (state, timeString) => state.timeStrings.push(timeString),
+  // setTimeString: (state, timeString) => state.timeString = timeString,
+  // pushTimeString: (state, timeString) => state.timeStrings.push(timeString),
   unshiftTimeString: (state, timeString) => state.timeStrings.unshift(timeString),
   emptyTimeString: (state) => state.timeStrings = [],
   setTimeString2: (state, timeString2) => state.timeString2 = timeString2,

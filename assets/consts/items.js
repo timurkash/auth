@@ -14,4 +14,9 @@ export const ITEMS = [
     title: 'Login',
     to: '/loginfo'
   },
+  {
+    icon: 'mdi-arrow-down-bold',
+    title: 'Environment',
+    to: '/env'
+  },
 ]

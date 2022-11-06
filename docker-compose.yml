@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: timurkash/grpc-web-example-frontend
+    env_file:
+      - ./.env
     ports:
       - "3009:3000"
     networks:
@@ -18,7 +20,7 @@ services:
     image: timurkash/grpc-web-example-envoy
     ports:
       - "8092:8080"
-    links:
+    depends_on:
       - time-server
     networks:
       - test-backend
