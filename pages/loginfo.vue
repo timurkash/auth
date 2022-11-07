@@ -15,11 +15,11 @@ export default {
       loginUrl: 'mAuth/loginUrl',
     })
   },
-  watch: {
-    accessToken: async function () {
-      await this.copy()
-    }
-  },
+  // watch: {
+  //   accessToken: async function () {
+  //     await this.copy()
+  //   }
+  // },
   methods: {
     login: async function (social) {
       if (social == 'google') {
