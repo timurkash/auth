@@ -14,7 +14,8 @@ export default {
   },
   methods: {
     getTime() {
-      this.$store.dispatch('mTime/getTime', randomString())
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      this.$store.dispatch('mTime/getTime', randomString(characters))
     },
     empty() {
       this.$store.commit('mTime/emptyTimeString')

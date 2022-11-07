@@ -13,8 +13,6 @@ export default {
       fixed: false,
       items: ITEMS,
       miniVariant: false,
-      // right: true,
-      // rightDrawer: false,
       title: 'Test',
     }
   },

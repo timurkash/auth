@@ -1,8 +1,6 @@
 import moment from 'moment'
 
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-export function randomString() {
+export function randomString(characters) {
   const length = 10
   let result = '';
   let charactersLength = characters.length;
