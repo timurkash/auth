@@ -4,6 +4,16 @@ const REFRESH_TOKEN = 'refresh_token'
 const KC_IDP_HINT = 'kc_idp_hint'
 const CODE_VERIFIER = 'code_verifier'
 
+export function getRefreshToken(cookies) {
+  return cookies.get(REFRESH_TOKEN)
+}
+
+export function getTokens(cookies) {
+  let accessToken = cookies.get(ACCESS_TOKEN)
+  let refreshToken = cookies.get(REFRESH_TOKEN)
+  return {accessToken, refreshToken}
+}
+
 export function setTokens(cookies, data) {
   cookies.set(ACCESS_TOKEN, data.access_token, {
     maxAge: data.expires_in,
@@ -13,16 +23,6 @@ export function setTokens(cookies, data) {
     maxAge: data.refresh_expires_in,
     sameSite: true,
   })
-}
-
-export function getRefreshToken(cookies) {
-  return cookies.get(REFRESH_TOKEN)
-}
-
-export function getTokens(cookies) {
-  let accessToken = cookies.get(ACCESS_TOKEN)
-  let refreshToken = cookies.get(REFRESH_TOKEN)
-  return {accessToken, refreshToken}
 }
 
 export function delTokens(cookies) {
