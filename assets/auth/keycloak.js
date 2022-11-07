@@ -2,6 +2,7 @@ import axios from 'axios'
 import {generateUUID} from 'assets/auth/common';
 import {generateCodeChallengeFromVerifier} from 'assets/auth/pkce';
 
+const AUTH = 'auth'
 const TOKEN = 'token'
 const LOGOUT = 'logout'
 const REFRESH_TOKEN = 'refresh_token'
@@ -27,8 +28,7 @@ export async function getLoginUrl(redirectUrl, social, codeVerifier) {
   let state = generateUUID()
   let nonce = generateUUID()
   let codeChallenge = await generateCodeChallengeFromVerifier(codeVerifier)
-  let url = getKeycloakUrl('auth')
-  return `${url}?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${social}`
+  return `${getKeycloakUrl(AUTH)}?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${social}`
 }
 
 function getString(params) {
