@@ -1,9 +1,11 @@
 import {generateCodeVerifier} from "assets/auth/pkce";
 import {getParams, getUri, parseToken} from "assets/auth/common";
-import {setTokens, getRefreshToken, delTokens,
+import {
+  setTokens, getRefreshToken, delTokens,
   setKcIdpHint, getKcIdpHint,
-  setCodeVerifier, getCodeVerifier} from 'assets/auth/cookies'
-import {setParams, getJwt, logout, getLoginUrl, refreshToken, forceRefreshToken} from 'assets/auth/keycloak'
+  setCodeVerifier, getCodeVerifier, getTokens
+} from 'assets/auth/cookies'
+import {setParams, getLoginUrl, getJwt, logout, refreshJwt} from 'assets/auth/keycloak'
 
 export const state = () => ({
   kcIdpHint: null,
@@ -48,7 +50,6 @@ export const actions = {
   },
   async mounted({state, commit, dispatch}, params){
     setParams(params)
-    // console.log(params)
     commit('setKcIdpHint', getKcIdpHint(this.$cookies))
     setInterval(() => dispatch('checkRefreshToken'), 60000);
     const logged = await refreshToken(commit, this.$cookies)
@@ -90,12 +91,6 @@ export const actions = {
       console.error(err)
     }
   },
-  async refreshToken({commit}) {
-    await refreshToken(commit, this.$cookies)
-  },
-  async forceRefreshToken({commit}) {
-    await forceRefreshToken(commit, this.$cookies)
-  },
   async logout({commit}) {
     const refreshToken = getRefreshToken(this.$cookies)
     if (refreshToken) {
@@ -111,4 +106,33 @@ export const actions = {
       commit('setLoggedOff')
     }
   },
+  async refreshToken({commit}) {
+    await refreshToken(commit, this.$cookies)
+  },
+  async forceRefreshToken({commit}) {
+    await refreshToken(commit, this.$cookies, true)
+  },
+}
+
+async function refreshToken(commit, cookies, force) {
+  const {accessToken, refreshToken} = getTokens(cookies)
+  if (!force && accessToken) {
+    commit('setTokens', {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
+    return true
+  }
+  if (refreshToken) {
+    try {
+      const data = await refreshJwt(refreshToken)
+      commit('setTokens', data)
+      setTokens(cookies, data)
+      return true
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  commit('setLoggedOff')
+  return false
 }

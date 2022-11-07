@@ -1,15 +1,16 @@
 import axios from 'axios'
-import {getTokens, setTokens} from "assets/auth/cookies";
 import {generateUUID} from 'assets/auth/common';
 import {generateCodeChallengeFromVerifier} from 'assets/auth/pkce';
 
-let keycloakUrl, realm, client, clientSecret
-
+const TOKEN = 'token'
+const LOGOUT = 'logout'
 const REFRESH_TOKEN = 'refresh_token'
 const AUTHORIZATION_CODE = 'authorization_code'
 const HEADER = {
   'content-type': 'application/x-www-form-urlencoded',
 }
+
+let keycloakUrl, realm, client, clientSecret
 
 export function setParams(params) {
   keycloakUrl = params.keycloakUrl
@@ -38,7 +39,7 @@ function getString(params) {
 
 export async function getJwt(code, redirectUri, codeVerifier) {
   const {data} = await axios({
-    url: getKeycloakUrl('token'),
+    url: getKeycloakUrl(TOKEN),
     method: 'POST',
     data: getString({
       code: code,
@@ -55,7 +56,7 @@ export async function getJwt(code, redirectUri, codeVerifier) {
 
 export async function refreshJwt(refreshToken) {
   const {data} = await axios({
-    url: getKeycloakUrl('token'),
+    url: getKeycloakUrl(TOKEN),
     method: 'POST',
     data: getString({
       grant_type: REFRESH_TOKEN,
@@ -70,7 +71,7 @@ export async function refreshJwt(refreshToken) {
 
 export async function logout(refreshToken) {
   await axios({
-    url: getKeycloakUrl('logout'),
+    url: getKeycloakUrl(LOGOUT),
     method: 'POST',
     data: getString({
       client_id: client,
@@ -79,43 +80,4 @@ export async function logout(refreshToken) {
     }),
     headers: HEADER,
   })
-}
-
-export async function refreshToken(commit, cookies) {
-  const {accessToken, refreshToken} = getTokens(cookies)
-  if (accessToken) {
-    commit('setTokens', {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    })
-    return true
-  }
-  if (refreshToken) {
-    try {
-      const data = await refreshJwt(refreshToken)
-      commit('setTokens', data)
-      setTokens(cookies, data)
-      return true
-    } catch (err) {
-      console.error(err)
-    }
-  }
-  commit('setLoggedOff')
-  return false
-}
-
-export async function forceRefreshToken(commit, cookies) {
-  const {refreshToken} = getTokens(cookies)
-  if (refreshToken) {
-    try {
-      const data = await refreshJwt(refreshToken)
-      commit('setTokens', data)
-      setTokens(cookies, data)
-      return true
-    } catch (err) {
-      console.error(err)
-    }
-  }
-  commit('setLoggedOff')
-  return false
 }
