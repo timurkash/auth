@@ -15,11 +15,11 @@ export default {
       loginUrl: 'mAuth/loginUrl',
     })
   },
-  // watch: {
-  //   accessToken: async function () {
-  //     await this.copy()
-  //   }
-  // },
+  watch: {
+    accessToken: async function () {
+      await this.copy()
+    }
+  },
   methods: {
     login: async function (social) {
       if (social == 'google') {
@@ -43,7 +43,7 @@ export default {
       }
     },
     forceRefresh: function () {
-      this.$store.dispatch('mAuth/forceRefreshToken')
+      this.$store.dispatch('mAuth/refreshToken', true)
     },
   },
 }

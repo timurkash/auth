@@ -52,7 +52,7 @@ export const actions = {
     setParams(params)
     commit('setKcIdpHint', getKcIdpHint(this.$cookies))
     setInterval(() => dispatch('checkRefreshToken'), 60000);
-    const logged = await refreshToken(commit, this.$cookies)
+    const logged = await dispatch('refreshToken')
     if (!logged) {
       const pathnameSearch = `${location.pathname}${location.search}`
       if (state.accessToken) {
@@ -106,33 +106,26 @@ export const actions = {
       commit('setLoggedOff')
     }
   },
-  async refreshToken({commit}) {
-    await refreshToken(commit, this.$cookies)
-  },
-  async forceRefreshToken({commit}) {
-    await refreshToken(commit, this.$cookies, true)
-  },
-}
-
-async function refreshToken(commit, cookies, force) {
-  const {accessToken, refreshToken} = getTokens(cookies)
-  if (!force && accessToken) {
-    commit('setTokens', {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    })
-    return true
-  }
-  if (refreshToken) {
-    try {
-      const data = await refreshJwt(refreshToken)
-      commit('setTokens', data)
-      setTokens(cookies, data)
+  async refreshToken({commit}, force) {
+    const {accessToken, refreshToken} = getTokens(this.$cookies)
+    if (!force && accessToken) {
+      commit('setTokens', {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      })
       return true
-    } catch (err) {
-      console.error(err)
     }
-  }
-  commit('setLoggedOff')
-  return false
+    if (refreshToken) {
+      try {
+        const data = await refreshJwt(refreshToken)
+        commit('setTokens', data)
+        setTokens(this.$cookies, data)
+        return true
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    commit('setLoggedOff')
+    return false
+  },
 }
