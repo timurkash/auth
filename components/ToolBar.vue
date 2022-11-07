@@ -5,7 +5,7 @@ import {mapGetters} from "vuex";
 import {getUri} from "assets/auth/common";
 
 export default {
-  name: 'Bar',
+  name: 'ToolBar',
   data: function () {
     return {
       clipped: false,

@@ -26,6 +26,7 @@ Environments have to be set in `.env`
 for time-server
 
 - API_URL
+- TEST
 
 for keycloak
 - KEYCLOAK_URL

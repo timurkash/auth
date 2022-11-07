@@ -1,11 +1,11 @@
 <script>
 import {ITEMS} from 'assets/consts/items'
-import Bar from '/components/Bar'
+import ToolBar from '/components/ToolBar'
 
 export default {
   name: 'DefaultLayout',
   components: {
-    Bar,
+    ToolBar,
   },
   data: function () {
     return {
@@ -24,7 +24,7 @@ export default {
 
 <template>
   <v-app dark>
-    <Bar />
+    <ToolBar />
     <v-main>
       <v-container>
         <Nuxt/>

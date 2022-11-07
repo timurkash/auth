@@ -30,8 +30,8 @@ services:
       context: envoy_time/time
       dockerfile: Dockerfile
     image: timurkash/grpc-web-example-time
-    environment:
-      TEST: TIMUR
+    env_file:
+      - ./.env
 #    ports:
 #      - "9090:9090"
     networks:
