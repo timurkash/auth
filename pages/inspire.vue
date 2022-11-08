@@ -26,29 +26,19 @@ export default {
 
 <template>
   <div>
-<!--    <v-row>-->
-<!--      <v-col class="text-center">-->
-<!--        <Tutorial/>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
-    <v-row class="justify-center">
-      <!--      <v-col class="justify-center">-->
-      <!--        <div>-->
-      <img
-        src="/v.png"
-        alt="Vuetify.js"
-        class="mb-5"
-      />
-      <!--        </div>-->
-      <!--      </v-col>-->
+    <v-row>
+      <v-col class="text-center">
+        <Tutorial/>
+      </v-col>
     </v-row>
+    <v-row><img src="/v.png" alt="Vuetify.js" class="vuetify"/></v-row>
     <v-row>
       <v-col class="text-center">
         <blockquote class="blockquote">
           “First, solve the problem. Then, write the code.”
           <footer>
             <small>
-              <em>&mdash;John Johnson</em>
+              <em>— John Johnson</em>
             </small>
           </footer>
         </blockquote>
@@ -73,9 +63,10 @@ export default {
   </div>
 </template>
 
-<style lang="scss">
-//img {
-//  align-items: center;
-//}
+<style lang="scss" scoped>
+img.vuetify {
+  margin-left: auto;
+  margin-right: auto;
+}
 
 </style>

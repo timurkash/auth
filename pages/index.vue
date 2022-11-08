@@ -45,13 +45,9 @@ export default {
           <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the
             future.</p>
           <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+            <em><small>— John Leider</small></em>
           </div>
           <hr class="my-3">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi, culpa dolores eligendi iste nemo
-            obcaecati possimus quos tempora ullam vel!
-          </p>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi, culpa dolores eligendi iste nemo
             obcaecati possimus quos tempora ullam vel!
