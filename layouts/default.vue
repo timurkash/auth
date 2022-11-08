@@ -1,5 +1,4 @@
 <script>
-import {ITEMS} from 'assets/consts/items'
 import ToolBar from '/components/ToolBar'
 
 export default {
@@ -7,23 +6,11 @@ export default {
   components: {
     ToolBar,
   },
-  data: function () {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: ITEMS,
-      miniVariant: false,
-      // right: true,
-      // rightDrawer: false,
-      title: 'Test',
-    }
-  },
 }
 </script>
 
 <template>
-  <v-app dark>
+  <v-app>
     <ToolBar />
     <v-main>
       <v-container>
