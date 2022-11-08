@@ -10,6 +10,15 @@ export default {
     client: null,
     clientSecret: null,
   }),
+  head() {
+    return {
+      title: "Environment",
+      // meta: [
+      //   // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+      //   { hid: 'description', name: 'description', content: 'My custom description' }
+      // ]
+    }
+  },
   mounted() {
     this.apiUrl = this.$env.API_URL
     this.keycloakUrl = this.$env.KEYCLOAK_URL
