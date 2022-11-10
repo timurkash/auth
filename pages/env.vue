@@ -30,25 +30,40 @@ export default {
 </script>
 
 <template>
-  <div class="content">
-    <div class="grid-container">
-      <div class="grid-item">NODE_ENV</div><div class="grid-item">{{ nodeEnv }}</div>
-      <div class="grid-item">API_URL</div><div class="grid-item">{{ apiUrl }}</div>
-      <div class="grid-item">KEYCLOAK_URL</div><div class="grid-item">{{ keycloakUrl }}</div>
-      <div class="grid-item">REALM</div><div class="grid-item">{{ realm }}</div>
-      <div class="grid-item">CLIENT</div><div class="grid-item">{{ client }}</div>
-      <div class="grid-item">CLIENT_SECRET</div><div class="grid-item">{{ clientSecret }}</div>
+  <div>
+    <h2>Environments</h2>
+    <div class="flex">
+      <div class="grid-container">
+        <div class="grid-item">NODE_ENV</div>
+        <div class="grid-item">{{ nodeEnv }}</div>
+        <div class="grid-item">API_URL</div>
+        <div class="grid-item">{{ apiUrl }}</div>
+        <div class="grid-item">KEYCLOAK_URL</div>
+        <div class="grid-item">{{ keycloakUrl }}</div>
+        <div class="grid-item">REALM</div>
+        <div class="grid-item">{{ realm }}</div>
+        <div class="grid-item">CLIENT</div>
+        <div class="grid-item">{{ client }}</div>
+        <div class="grid-item">CLIENT_SECRET</div>
+        <div class="grid-item">{{ clientSecret }}</div>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.content {
+h2 {
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+.flex {
   display: flex;
   .grid-container {
     display: grid;
     grid-template-columns: auto auto;
-    gap: 10px;
+    column-gap: 16px;
+    row-gap: 10px;
+
     .grid-item {
       //border: 1px white solid;
     }

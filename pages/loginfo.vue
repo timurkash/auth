@@ -55,49 +55,61 @@ export default {
       <v-col class="text-center">
         <v-btn color="primary" @click="login('google')" v-show="!tokenInfo">Google</v-btn>
         <v-btn color="primary" @click="login('facebook')" v-show="!tokenInfo">Facebook</v-btn>
-        <div v-if="tokenInfo">
-          <h2>tokenInfo</h2>
-          <v-container>
-<!--            <v-card width="100">-->
-<!--              <v-img :src="tokenInfo.picture"/>-->
-<!--            </v-card>-->
-            <h3>Name</h3>
-            <p>{{tokenInfo.name}}</p>
-            <h3>Email</h3>
-            <p>{{tokenInfo.email}}</p>
-            <h3>UserType</h3>
-            <p>{{tokenInfo.user_type}}</p>
-            <h3>Roles</h3>
-            <span class="role"
-                  v-for="item in tokenInfo.realm_access.roles"
-                  v-if="item.endsWith('-admin')"
-            >
-              {{item}}
-            </span>
-            <div class="token">
-            <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
-            <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
-            </div>
-            <v-textarea :value="accessToken" rows="15" />
-          </v-container>
-        </div>
       </v-col>
     </v-row>
+    <div v-if="tokenInfo">
+      <h2>tokenInfo</h2>
+      <v-container>
+        <div class="flex">
+          <div class="grid-container">
+            <h4>Name</h4>
+            <p>{{ tokenInfo.name }}</p>
+            <h4>Email</h4>
+            <p>{{ tokenInfo.email }}</p>
+            <h4>UserType</h4>
+            <p>{{ tokenInfo.user_type }}</p>
+            <h4>Roles</h4>
+            <div><span class="role" v-for="item in tokenInfo.realm_access.roles" v-if="item.endsWith('-admin')">{{ item }}</span></div>
+          </div>
+        </div>
+        <!--            <v-card width="100">-->
+        <!--              <v-img :src="tokenInfo.picture"/>-->
+        <!--            </v-card>-->
+        <div class="token">
+          <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
+          <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
+        </div>
+        <v-textarea :value="accessToken" rows="15"/>
+      </v-container>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.flex {
+  display: flex;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 16px;
+}
+
 img.picture {
   border-radius: 50%;
   height: 96px;
 }
+
 span.role {
-  margin: 10px;
+  margin-right: 10px;
 }
+
 .token {
   display: flex;
   margin-top: 20px;
 }
+
 .pointer {
   cursor: pointer;
 }
