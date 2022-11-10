@@ -13,6 +13,7 @@ export default {
       fixed: false,
       items: ITEMS,
       miniVariant: false,
+      title: "Auth",
     }
   },
   computed: {

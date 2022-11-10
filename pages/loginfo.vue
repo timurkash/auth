@@ -58,9 +58,9 @@ export default {
         <div v-if="tokenInfo">
           <h2>tokenInfo</h2>
           <v-container>
-            <v-card width="100">
-              <v-img :src="tokenInfo.picture"/>
-            </v-card>
+<!--            <v-card width="100">-->
+<!--              <v-img :src="tokenInfo.picture"/>-->
+<!--            </v-card>-->
             <h3>Name</h3>
             <p>{{tokenInfo.name}}</p>
             <h3>Email</h3>
@@ -74,7 +74,7 @@ export default {
             >
               {{item}}
             </span>
-            <div class="flex">
+            <div class="token">
             <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
             <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
             </div>
@@ -94,8 +94,9 @@ img.picture {
 span.role {
   margin: 10px;
 }
-.flex {
+.token {
   display: flex;
+  margin-top: 20px;
 }
 .pointer {
   cursor: pointer;
