@@ -1,15 +1,17 @@
 <script>
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'Environments',
   data: () => ({
     nodeEnv: process.env.NODE_ENV,
-    apiUrl: null,
-    keycloakUrl: null,
-    realm: null,
-    client: null,
-    clientSecret: null,
   }),
+  computed: {
+    ...mapGetters({
+      apiUrl: 'mEnv/apiUrl',
+      keycloak: 'mEnv/keycloak',
+    })
+  },
   head() {
     return {
       title: "Environment",
@@ -19,33 +21,33 @@ export default {
       // ]
     }
   },
-  mounted() {
-    this.apiUrl = this.$env.API_URL
-    this.keycloakUrl = this.$env.KEYCLOAK_URL
-    this.realm = this.$env.REALM
-    this.client = this.$env.CLIENT
-    this.clientSecret = this.$env.CLIENT_SECRET
-  },
 }
 </script>
 
 <template>
   <div>
     <h2>Environments</h2>
-    <div class="flex">
-      <div class="grid-container">
-        <div class="grid-item">NODE_ENV</div>
-        <div class="grid-item">{{ nodeEnv }}</div>
-        <div class="grid-item">API_URL</div>
-        <div class="grid-item">{{ apiUrl }}</div>
-        <div class="grid-item">KEYCLOAK_URL</div>
-        <div class="grid-item">{{ keycloakUrl }}</div>
-        <div class="grid-item">REALM</div>
-        <div class="grid-item">{{ realm }}</div>
-        <div class="grid-item">CLIENT</div>
-        <div class="grid-item">{{ client }}</div>
-        <div class="grid-item">CLIENT_SECRET</div>
-        <div class="grid-item">{{ clientSecret }}</div>
+    <div>
+      <div class="content">
+        <div class="grid-container">
+          <div class="grid-item">NODE_ENV</div>
+          <div class="grid-item">{{ nodeEnv }}</div>
+          <div class="grid-item">API_URL</div>
+          <div class="grid-item">{{ apiUrl }}</div>
+        </div>
+      </div>
+      <h3>Keycloak</h3>
+      <div class="content" v-if="keycloak">
+        <div class="grid-container">
+          <div class="grid-item">KEYCLOAK_URL</div>
+          <div class="grid-item">{{ keycloak.url }}</div>
+          <div class="grid-item">REALM</div>
+          <div class="grid-item">{{ keycloak.realm }}</div>
+          <div class="grid-item">CLIENT</div>
+          <div class="grid-item">{{ keycloak.client }}</div>
+          <div class="grid-item">CLIENT_SECRET</div>
+          <div class="grid-item">{{ keycloak.clientSecret }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -56,7 +58,11 @@ h2 {
   margin-top: 10px;
   margin-bottom: 16px;
 }
-.flex {
+h3 {
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+.content {
   display: flex;
   .grid-container {
     display: grid;

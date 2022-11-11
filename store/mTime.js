@@ -3,8 +3,6 @@ import {GetCurrentTimeRequest} from 'assets/jsclient/time/v1/time_service_pb'
 import {getDateTime} from 'assets/common/common'
 // import {Timestamp} from 'assets/jsclient/timestamp/timestamp_pb'
 
-const apiUrl = process.env.API_URL
-
 export const state = () => ({
   timeString: 'n/a',
   timeStrings: [],
@@ -25,7 +23,7 @@ export const mutations = {
   setTimeString2: (state, timeString2) => state.timeString2 = timeString2,
 }
 
-const client = new TimeServicePromiseClient(apiUrl, null, null)
+const client = new TimeServicePromiseClient(process.env.API_URL, null, null)
 
 export const actions = {
   async getTime({rootState, commit}, dump) {

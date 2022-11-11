@@ -11,17 +11,17 @@ const HEADER = {
   'content-type': 'application/x-www-form-urlencoded',
 }
 
-let keycloakUrl, realm, client, clientSecret
+let url, realm, client, clientSecret
 
 export function setParams(params) {
-  keycloakUrl = params.keycloakUrl
+  url = params.url
   realm = params.realm
   client = params.client
   clientSecret = params.clientSecret
 }
 
 export function getKeycloakUrl(route) {
-  return `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/${route}`
+  return `${url}/auth/realms/${realm}/protocol/openid-connect/${route}`
 }
 
 export async function getLoginUrl(redirectUrl, social, codeVerifier) {

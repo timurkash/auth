@@ -4,10 +4,7 @@ import {mapGetters} from 'vuex'
 
 export default {
   name: 'LogInfo',
-  data: () => ({
-    keycloakUrl: null,
-    nodeEnv: null,
-  }),
+  data: () => ({}),
   computed: {
     ...mapGetters({
       accessToken: 'mAuth/accessToken',

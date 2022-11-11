@@ -23,14 +23,6 @@ export default {
       loginUrl: 'mAuth/loginUrl',
     })
   },
-  mounted() {
-    this.$store.dispatch('mAuth/mounted', {
-      keycloakUrl: this.$env.KEYCLOAK_URL,
-      realm: this.$env.REALM,
-      client: this.$env.CLIENT,
-      clientSecret: this.$env.CLIENT_SECRET
-    })
-  },
   methods: {
     logout: function () {
       this.$store.dispatch('mAuth/logout')
