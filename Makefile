@@ -1,12 +1,12 @@
 
 dc-frontend:
-	docker-compose stop frontend
 	docker-compose build frontend
+	docker-compose stop frontend
 	docker-compose up -d frontend
 
 dc-envoy:
-	docker-compose stop envoy
 	docker-compose build envoy
+	docker-compose stop envoy
 	docker-compose up -d envoy
 
 dc-time:
@@ -15,7 +15,7 @@ dc-time:
 	docker-compose up -d time-server
 
 dc-stop:
-	docker-compose
+	docker-compose stop
 
 proto:
 	@echo "--> Generating gRPC clients"
