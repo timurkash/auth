@@ -10,8 +10,8 @@ dc-envoy:
 	docker-compose up -d envoy
 
 dc-time:
-	docker-compose stop time-server
 	docker-compose build time-server
+	docker-compose stop time-server
 	docker-compose up -d time-server
 
 dc-stop:

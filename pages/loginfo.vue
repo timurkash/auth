@@ -30,17 +30,13 @@ export default {
       }
     },
     copy: async function () {
-      if (process.env.NODE_ENV == 'development') {
-        await navigator.clipboard.writeText(`{
+      await navigator.clipboard.writeText(`{
 \t"Authorization": "Bearer ${this.accessToken}"
 }`)
-        console.log("accessToken copied")
-      } else {
-        console.warn("NODE_ENV is not development")
-      }
     },
-    forceRefresh: function () {
-      this.$store.dispatch('mAuth/refreshToken', true)
+    forceRefresh: async function () {
+      await this.$store.dispatch('mAuth/refreshToken', true)
+      await this.copy()
     },
   },
 }
@@ -66,7 +62,9 @@ export default {
             <h4>UserType</h4>
             <p>{{ tokenInfo.user_type }}</p>
             <h4>Roles</h4>
-            <div><span class="role" v-for="item in tokenInfo.realm_access.roles" v-if="item.endsWith('-admin')">{{ item }}</span></div>
+            <div><span class="role" v-for="item in tokenInfo.realm_access.roles" v-if="item.endsWith('-admin')">{{
+                item
+              }}</span></div>
           </div>
         </div>
         <!--            <v-card width="100">-->
