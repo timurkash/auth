@@ -74,7 +74,7 @@ export default {
           <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
           <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
         </div>
-        <v-textarea :value="accessToken" rows="15"/>
+        <v-textarea :value="accessToken" rows="8"/>
       </v-container>
     </div>
   </div>
