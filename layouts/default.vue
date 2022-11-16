@@ -30,3 +30,12 @@ export default {
     </v-main>
   </v-app>
 </template>
+
+
+<style lang="scss">
+.v-textarea textarea {
+  font-size: 12px;
+  line-height: 1rem;
+}
+</style>
+

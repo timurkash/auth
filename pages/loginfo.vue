@@ -51,46 +51,54 @@ export default {
       </v-col>
     </v-row>
     <div v-if="tokenInfo">
-      <h2>tokenInfo</h2>
-      <v-container>
-        <div class="flex">
+      <v-row>
+        <v-col class="col-10">
+          <h3>tokenInfo</h3>
           <div class="grid-container">
             <h4>Id</h4>
-            <p>{{ tokenInfo.sub }}</p>
+            <h4>{{ tokenInfo.sub }}</h4>
             <h4>Name</h4>
-            <p>{{ tokenInfo.name }}</p>
+            <h4>{{ tokenInfo.name }}</h4>
             <h4>Email</h4>
-            <p>{{ tokenInfo.email }}</p>
+            <h4>{{ tokenInfo.email }}</h4>
             <h4>UserType</h4>
-            <p>{{ tokenInfo.user_type }}</p>
+            <h4>{{ tokenInfo.user_type }}</h4>
             <h4>Roles</h4>
-            <div><span class="role" v-for="item in tokenInfo.realm_access.roles" v-if="item.endsWith('-admin')">{{
-                item
-              }}</span></div>
+            <h5><span class="role" v-for="item in tokenInfo.realm_access.roles" v-if="item.endsWith('-admin')">
+              {{ item }}</span>
+            </h5>
           </div>
-        </div>
-        <!--            <v-card width="100">-->
-        <!--              <v-img :src="tokenInfo.picture"/>-->
-        <!--            </v-card>-->
-        <div class="token">
+        </v-col>
+        <v-col class="col-2">
+          <v-card width="96">
+            <v-img class="pic" :src="tokenInfo.picture" alt="pic"/>
+          </v-card>
+        </v-col>
+      </v-row>
+      <div class="token">
+        <div class="buttons">
           <h3 @click="copy" class="mr-10 pointer">AccessToken</h3>
           <v-btn color="primary" @click="forceRefresh">Force Refresh Token</v-btn>
         </div>
-        <v-textarea :value="accessToken" rows="8"/>
-      </v-container>
+        <v-textarea :value="accessToken" rows="10" class="area" hide-details readonly/>
+      </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.flex {
+<style lang="scss">
+.token-info {
   display: flex;
 }
 
 .grid-container {
-  display: grid;
+  display: inline-grid;
   grid-template-columns: auto auto;
   column-gap: 16px;
+
+  span.role {
+    margin-right: 10px;
+  }
 }
 
 img.picture {
@@ -98,16 +106,17 @@ img.picture {
   height: 96px;
 }
 
-span.role {
-  margin-right: 10px;
-}
-
 .token {
-  display: flex;
-  margin-top: 20px;
+  margin-top: 15px;
+
+  .buttons {
+    display: flex;
+    margin-bottom: -8px;
+  }
 }
 
 .pointer {
   cursor: pointer;
 }
+
 </style>

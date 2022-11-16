@@ -20,7 +20,7 @@ export const getters = {
   kcIdpHint: state => state.kcIdpHint,
   loginUrl: state => state.loginUrl,
   accessToken: state => state.accessToken,
-  metadata: state => state.metadata,
+  // metadata: state => state.metadata,
   tokenInfo: state => state.tokenInfo,
   refreshToken: state => state.refreshToken,
 }
