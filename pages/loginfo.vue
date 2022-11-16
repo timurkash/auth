@@ -55,6 +55,8 @@ export default {
       <v-container>
         <div class="flex">
           <div class="grid-container">
+            <h4>Id</h4>
+            <p>{{ tokenInfo.sub }}</p>
             <h4>Name</h4>
             <p>{{ tokenInfo.name }}</p>
             <h4>Email</h4>
