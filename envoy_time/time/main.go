@@ -32,12 +32,15 @@ func (t *timeService) GetCurrentTime(ctx context.Context, req *pb.GetCurrentTime
 	if !ok {
 		return nil, errors.New("no metadata")
 	}
+	now := time.Now()
 	bearer, ok := meta[authorization]
 	if !ok {
-		return nil, errors.New("no authorization")
+		return &pb.GetCurrentTimeResponse{
+			CurrentTime:  fmt.Sprintf("%s: %s: %s", "no authorization", req.Dump, now.String()),
+			CurrentTime2: timestamppb.New(now),
+		}, nil
 	}
 	log.Printf("got authorization bearer\n%v\n", bearer[0])
-	now := time.Now()
 	return &pb.GetCurrentTimeResponse{
 		CurrentTime:  fmt.Sprintf("%s: %s: %s", test, req.Dump, now.String()),
 		CurrentTime2: timestamppb.New(now),

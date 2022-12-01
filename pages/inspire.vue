@@ -26,11 +26,11 @@ export default {
 
 <template>
   <div>
-    <v-row>
-      <v-col class="text-center">
-        <Tutorial/>
-      </v-col>
-    </v-row>
+<!--    <v-row>-->
+<!--      <v-col class="text-center">-->
+<!--        <Tutorial/>-->
+<!--      </v-col>-->
+<!--    </v-row>-->
     <v-row><img src="/v.png" alt="Vuetify.js" class="vuetify"/></v-row>
     <v-row>
       <v-col class="text-center">

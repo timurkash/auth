@@ -27,30 +27,19 @@ const client = new TimeServicePromiseClient(process.env.API_URL, null, null)
 
 export const actions = {
   async getTime({rootState, commit}, dump) {
-    const metadata = rootState.mAuth.metadata
-    if (metadata) {
-      try {
-        const getCurrentTimeRequest = new GetCurrentTimeRequest().
-          setDump(dump)
-        const response = await client.getCurrentTime(getCurrentTimeRequest, metadata)
-        commit('unshiftTimeString', response.getCurrentTime())
-        const currentTime2 = getDateTime(response.getCurrentTime2())
-        // const ttt = new Date(2011,01,12,14,45,55,596);
-        //
-        // console.log(typeof ttt)
-
-        commit('setTimeString2', currentTime2)
-        //
-        //   response.getCurrentTime2()
-        // const date = new Date(currentTime2.getSeconds()*1000)
-        // commit('setTimeString2', date)
-        // console.log(date)
-        // console.log(currentTime2.getNanos())
-      } catch (err) {
-        console.error(err)
-      }
-    } else {
-      console.error('not logged')
+    try {
+      const metadata = rootState.mAuth.metadata
+      // if (metadata) {
+      const getCurrentTimeRequest = new GetCurrentTimeRequest().setDump(dump)
+      const response = await client.getCurrentTime(getCurrentTimeRequest, metadata)
+      commit('unshiftTimeString', response.getCurrentTime())
+      const currentTime2 = getDateTime(response.getCurrentTime2())
+      commit('setTimeString2', currentTime2)
+    } catch (err) {
+      console.error(err)
     }
+    // } else {
+    //   console.error('not logged')
+    // }
   },
 }
