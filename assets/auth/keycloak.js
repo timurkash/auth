@@ -21,7 +21,7 @@ export function setParams(params) {
 }
 
 export function getKeycloakUrl(route) {
-  return `${url}/auth/realms/${realm}/protocol/openid-connect/${route}`
+  return `${url}/realms/${realm}/protocol/openid-connect/${route}`
 }
 
 export async function getLoginUrl(redirectUrl, social, codeVerifier) {
