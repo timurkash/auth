@@ -4,6 +4,8 @@ dc-frontend:
 	docker-compose stop frontend
 	docker-compose up -d frontend
 
+dc-envoy-time: dc-envoy dc-time
+
 dc-envoy:
 	docker-compose build envoy
 	docker-compose stop envoy
