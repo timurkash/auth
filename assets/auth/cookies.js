@@ -1,4 +1,3 @@
-
 import VueCookies from 'vue-cookies'
 
 const ACCESS_TOKEN = 'access_token'

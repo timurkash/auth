@@ -1,11 +1,16 @@
 import {generateCodeVerifier} from "@/assets/auth/pkce";
 import {getParams, getUri, parseToken} from "@/assets/auth/common";
 import {
-  setTokens, getRefreshToken, delTokens,
-  setKcIdpHint, getKcIdpHint,
-  setCodeVerifier, getCodeVerifier, getTokens
+  delTokens,
+  getCodeVerifier,
+  getKcIdpHint,
+  getRefreshToken,
+  getTokens,
+  setCodeVerifier,
+  setKcIdpHint,
+  setTokens
 } from '@/assets/auth/cookies'
-import {setParams, getLoginUrl, getJwt, logout, refreshJwt} from '@/assets/auth/keycloak'
+import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
 
 export const state = () => ({
   kcIdpHint: null,
@@ -48,7 +53,7 @@ export const actions = {
       commit('setLoggedOff')
     }
   },
-  async mounted({state, commit, dispatch}, params){
+  async mounted({state, commit, dispatch}, params) {
     setParams(params)
     commit('setKcIdpHint', getKcIdpHint())
     setInterval(() => dispatch('checkRefreshToken'), 60000);
