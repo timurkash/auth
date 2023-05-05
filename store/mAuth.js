@@ -44,13 +44,13 @@ export const mutations = {
 
 export const actions = {
   checkRefreshToken({commit}) {
-    if (!getRefreshToken(this.$cookies)) {
+    if (!getRefreshToken()) {
       commit('setLoggedOff')
     }
   },
   async mounted({state, commit, dispatch}, params){
     setParams(params)
-    commit('setKcIdpHint', getKcIdpHint(this.$cookies))
+    commit('setKcIdpHint', getKcIdpHint())
     setInterval(() => dispatch('checkRefreshToken'), 60000);
     const logged = await dispatch('refreshToken')
     if (!logged) {
@@ -70,14 +70,14 @@ export const actions = {
     }
   },
   async setCodeVerifier({state, commit}, {redirectUri, social}) {
-    setKcIdpHint(this.$cookies, social)
+    setKcIdpHint(social)
     let codeVerifier = generateCodeVerifier()
     let loginUrl = await getLoginUrl(redirectUri, social, codeVerifier)
     commit('setLoginUrl', loginUrl)
-    setCodeVerifier(this.$cookies, codeVerifier)
+    setCodeVerifier(codeVerifier)
   },
   async getJwt({commit, dispatch}, {code, redirectUri}) {
-    const codeVerifier = getCodeVerifier(this.$cookies)
+    const codeVerifier = getCodeVerifier()
     if (!codeVerifier) {
       console.error('cookie CODE_VERIFIER is not set')
       return
@@ -85,14 +85,14 @@ export const actions = {
     try {
       const data = await getJwt(code, redirectUri, codeVerifier)
       commit('setTokens', data)
-      setTokens(this.$cookies, data)
+      setTokens(data)
     } catch (err) {
       commit('setLoggedOff')
       console.error(err)
     }
   },
   async logout({commit}) {
-    const refreshToken = getRefreshToken(this.$cookies)
+    const refreshToken = getRefreshToken()
     if (refreshToken) {
       try {
         await logout(refreshToken)
@@ -100,14 +100,14 @@ export const actions = {
         console.error(err)
       } finally {
         commit('setLoggedOff')
-        delTokens(this.$cookies)
+        delTokens()
       }
     } else {
       commit('setLoggedOff')
     }
   },
   async refreshToken({commit}, force) {
-    const {accessToken, refreshToken} = getTokens(this.$cookies)
+    const {accessToken, refreshToken} = getTokens()
     if (!force && accessToken) {
       commit('setTokens', {
         access_token: accessToken,
@@ -119,7 +119,7 @@ export const actions = {
       try {
         const data = await refreshJwt(refreshToken)
         commit('setTokens', data)
-        setTokens(this.$cookies, data)
+        setTokens(data)
         return true
       } catch (err) {
         console.error(err)

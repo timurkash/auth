@@ -40,7 +40,6 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    'cookie-universal-nuxt',
     ['nuxt-env', {
       keys: [
         'API_URL','KEYCLOAK_URL','REALM','CLIENT','CLIENT_SECRET',
@@ -54,7 +53,7 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['assets/variables.scss'],
+    customVariables: ['@/assets/variables.scss'],
     theme: {
       dark: true,
       themes: {
