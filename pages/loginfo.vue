@@ -19,7 +19,7 @@ export default {
   // },
   methods: {
     login: async function (social) {
-      if (social == 'google') {
+      if (social === 'google') {
         await this.$store.dispatch('mAuth/setCodeVerifier', {
           redirectUri: getUri(location),
           social: social,

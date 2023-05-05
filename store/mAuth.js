@@ -1,11 +1,11 @@
-import {generateCodeVerifier} from "assets/auth/pkce";
-import {getParams, getUri, parseToken} from "assets/auth/common";
+import {generateCodeVerifier} from "@/assets/auth/pkce";
+import {getParams, getUri, parseToken} from "@/assets/auth/common";
 import {
   setTokens, getRefreshToken, delTokens,
   setKcIdpHint, getKcIdpHint,
   setCodeVerifier, getCodeVerifier, getTokens
-} from 'assets/auth/cookies'
-import {setParams, getLoginUrl, getJwt, logout, refreshJwt} from 'assets/auth/keycloak'
+} from '@/assets/auth/cookies'
+import {setParams, getLoginUrl, getJwt, logout, refreshJwt} from '@/assets/auth/keycloak'
 
 export const state = () => ({
   kcIdpHint: null,
