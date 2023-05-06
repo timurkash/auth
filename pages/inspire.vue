@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex'
-import {randomString} from 'assets/common/common'
+import {randomString} from '@/assets/common/common'
 
 export default {
   // name: 'InspirePage',

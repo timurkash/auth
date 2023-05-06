@@ -1,7 +1,7 @@
-import {TimeServicePromiseClient} from 'assets/jsclient/time/v1/time_service_grpc_web_pb'
-import {GetCurrentTimeRequest} from 'assets/jsclient/time/v1/time_service_pb'
-import {getDateTime} from 'assets/common/common'
-// import {Timestamp} from 'assets/jsclient/timestamp/timestamp_pb'
+import {TimeServicePromiseClient} from '@/assets/jsclient/time/v1/time_service_grpc_web_pb'
+import {GetCurrentTimeRequest} from '@/assets/jsclient/time/v1/time_service_pb'
+import {getDateTime} from '@/assets/common/common'
+// import {Timestamp} from '@/assets/jsclient/timestamp/timestamp_pb'
 
 export const state = () => ({
   timeString: 'n/a',
