@@ -1,14 +1,8 @@
 <script>
-import NuxtLogo from '/components/logo/NuxtLogo'
-import VuetifyLogo from '/components/logo/VuetifyLogo'
 import {mapGetters} from "vuex"
 
 export default {
   name: 'IndexPage',
-  components: {
-    NuxtLogo,
-    VuetifyLogo,
-  },
   computed: {
     ...mapGetters({})
   },
@@ -18,10 +12,6 @@ export default {
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="8">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo/>
-        <VuetifyLogo/>
-      </v-card>
       <v-card>
         <v-card-title class="headline">Welcome to the Vuetify + Nuxt.js template</v-card-title>
         <v-card-text>

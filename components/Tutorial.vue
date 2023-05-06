@@ -1,19 +1,11 @@
 <script>
-import GithubLogo from '/components/logo/GithubLogo'
-import TwitterLogo from '/components/logo/TwitterLogo'
-
 export default {
   name: 'NuxtTutorial',
-  components: {
-    GithubLogo,
-    TwitterLogo,
-  },
 }
 </script>
 
 <template>
   <div class="flex items-top justify-center py-10 bg-gray-200 sm:items-center sm:pt-0 rounded-xl">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
       <a class="flex justify-center sm:pt-0" href="https://nuxtjs.org" target="_blank">
         <img src="/nuxt.svg" alt="Nuxt" class="nuxt">
@@ -35,10 +27,6 @@ export default {
         <p class="mt-4 text-gray-800 border-t border-dashed">
           Have fun!
         </p>
-      </div>
-      <div class="flex justify-center pt-4 space-x-2">
-        <GithubLogo/>
-        <TwitterLogo/>
       </div>
     </div>
   </div>
