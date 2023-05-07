@@ -1,5 +1,5 @@
 import {generateCodeVerifier} from "@/assets/auth/pkce";
-import {getParams, getUri, parseToken} from "@/assets/auth/common";
+import {getUri, parseToken} from "@/assets/auth/common";
 import {
   delTokens,
   getCodeVerifier,
@@ -63,11 +63,11 @@ export const actions = {
       if (state.accessToken) {
         await this.$router.push(pathnameSearch)
       } else {
-        let params = getParams(location.hash)
+        const code = new URLSearchParams(location.hash.substring(1)).get("code")
         await this.$router.push(pathnameSearch)
-        if (params.code) {
+        if (code) {
           await dispatch('getJwt', {
-            code: params.code,
+            code: code,
             redirectUri: getUri(location),
           })
         }

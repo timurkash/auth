@@ -30,7 +30,5 @@ function base64urlEncode(a) {
 }
 
 export async function generateCodeChallengeFromVerifier(v) {
-  let hashed = await sha256(v);
-  let base64encoded = base64urlEncode(hashed);
-  return base64encoded;
+  return base64urlEncode(await sha256(v));
 }
