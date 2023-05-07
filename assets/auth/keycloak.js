@@ -14,14 +14,13 @@ let params = {
   url: null,
   client: null,
   clientSecret: null
-
 }
 
 export function setParams(theParams) {
   params = theParams
 }
 
-export async function getLoginUrl(redirectUrl, social, codeVerifier) {
+export async function getLoginUrl(redirectUrl, codeVerifier, social) {
   return `${params.url}${AUTH}?${getQuery({
     client_id: params.client,
     redirect_uri: redirectUrl,
@@ -36,7 +35,7 @@ export async function getLoginUrl(redirectUrl, social, codeVerifier) {
   })}`
 }
 
-export async function getJwt(code, redirectUri, codeVerifier) {
+export async function getJwt(redirectUri, codeVerifier, code) {
   const {data} = await axios({
     url: `${params.url}${TOKEN}`,
     method: POST,

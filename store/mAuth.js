@@ -6,7 +6,7 @@ import {
   getCookieKcIdpHint,
   getCookieRefreshToken,
   getCookieTokens,
-  setCookieKcIdpHintAndCodeVerifier,
+  setCookieCodeVerifierAndKcIdpHint,
   setCookieTokens
 } from '@/assets/auth/cookies'
 import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
@@ -67,8 +67,8 @@ export const actions = {
         await this.$router.push(pathnameSearch)
         if (code) {
           await dispatch('getJwt', {
-            code: code,
             redirectUri: getUri(location),
+            code: code,
           })
         }
       }
@@ -76,22 +76,21 @@ export const actions = {
   },
   async setCodeVerifier({}, {redirectUri, social}) {
     let codeVerifier = generateCodeVerifier()
-    setCookieKcIdpHintAndCodeVerifier(social, codeVerifier)
-    return await getLoginUrl(redirectUri, social, codeVerifier)
+    setCookieCodeVerifierAndKcIdpHint(codeVerifier, social)
+    return await getLoginUrl(redirectUri, codeVerifier, social)
   },
-  async getJwt({commit, dispatch}, {code, redirectUri}) {
+  async getJwt({commit}, {redirectUri, code}) {
     const codeVerifier = getCookieCodeVerifier()
     if (!codeVerifier) {
       console.error('cookie CODE_VERIFIER is not set')
       return
     }
     try {
-      const data = await getJwt(code, redirectUri, codeVerifier)
+      const data = await getJwt(redirectUri, codeVerifier, code)
       commit('setTokens', data)
       setCookieTokens(data)
     } catch (err) {
       commit('setLoggedOff')
-      console.error(err)
     }
   },
   async refreshToken({commit}, force) {
