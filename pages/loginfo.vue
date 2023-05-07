@@ -19,18 +19,18 @@ export default {
     login: async function (social) {
       if (social !== 'google') {
         alert('nothing but google is supported')
-        return
+      } else {
+        await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
       }
-      await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
+    },
+    forceRefresh: async function () {
+      await this.$store.dispatch('mAuth/refreshToken', true)
+      await this.copy()
     },
     copy: async function () {
       await navigator.clipboard.writeText(`{
 \t"Authorization": "Bearer ${this.accessToken}"
 }`)
-    },
-    forceRefresh: async function () {
-      await this.$store.dispatch('mAuth/refreshToken', true)
-      await this.copy()
     },
   },
 }

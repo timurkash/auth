@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import {generateUUID, getQuery} from '@/assets/auth/common'
 import {generateCodeChallengeFromVerifier} from '@/assets/auth/pkce'
 
@@ -66,7 +67,7 @@ export async function refreshJwt(refreshToken) {
 }
 
 export async function logout(refreshToken) {
-  await axios({
+  return axios({
     url: `${params.url}${LOGOUT}`,
     method: POST,
     headers: HEADER,

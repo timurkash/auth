@@ -27,7 +27,6 @@ export default {
     },
     login: async function () {
       const social = this.kcIdpHint
-      console.log(social)
       if (!social) {
         await this.$router.push('/loginfo')
       } else {
