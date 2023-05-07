@@ -3,8 +3,8 @@ import {parseToken} from "@/assets/auth/common"
 import {
   delCookieTokens,
   getCookieCodeVerifier,
-  getCookieSocial,
   getCookieRefreshToken,
+  getCookieSocial,
   getCookieTokens,
   setCookieCodeVerifierAndSocial,
   setCookieTokens
@@ -69,28 +69,24 @@ export const actions = {
         const code = new URLSearchParams(location.hash.substring(1)).get("code")
         await this.$router.push(pathnameSearch)
         if (code) {
-          await dispatch('getJwt', {
-            redirectUri: getUri(location),
-            code: code,
-          })
+          await dispatch('getJwt', {location, code})
         }
       }
     }
   },
   async setCodeVerifier({}, {location, social}) {
-    const redirectUri = getUri(location)
     const codeVerifier = generateCodeVerifier()
     setCookieCodeVerifierAndSocial({codeVerifier, social})
-    window.location.href = await getLoginUrl({redirectUri, codeVerifier, social})
+    window.location.href = await getLoginUrl({redirectUri: getUri(location), codeVerifier, social})
   },
-  async getJwt({commit}, {redirectUri, code}) {
+  async getJwt({commit}, {location, code}) {
     const codeVerifier = getCookieCodeVerifier()
     if (!codeVerifier) {
       console.error('cookie CODE_VERIFIER is not set')
       return
     }
     try {
-      const {data} = await getJwt({redirectUri, codeVerifier, code})
+      const {data} = await getJwt({redirectUri: getUri(location), codeVerifier, code})
       commit('setTokens', data)
       setCookieTokens(data)
     } catch (err) {
