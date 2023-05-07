@@ -1,6 +1,6 @@
 // GENERATING CODE VERIFIER
 function dec2hex(dec) {
-  return ("0" + dec.toString(16)).substr(-2);
+  return dec.toString().slice(-2);
 }
 export function generateCodeVerifier() {
   let array = new Uint32Array(56 / 2);

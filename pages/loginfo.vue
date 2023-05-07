@@ -9,7 +9,6 @@ export default {
     ...mapGetters({
       accessToken: 'mAuth/accessToken',
       tokenInfo: 'mAuth/tokenInfo',
-      loginUrl: 'mAuth/loginUrl',
     })
   },
   // watch: {
@@ -23,11 +22,10 @@ export default {
         alert('nothing but google is supported')
         return
       }
-      await this.$store.dispatch('mAuth/setCodeVerifier', {
+      window.location.href = await this.$store.dispatch('mAuth/setCodeVerifier', {
         redirectUri: getUri(location),
         social: social,
       })
-      window.location.href = this.loginUrl
     },
     copy: async function () {
       await navigator.clipboard.writeText(`{

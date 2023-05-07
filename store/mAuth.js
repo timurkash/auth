@@ -1,38 +1,34 @@
 import {generateCodeVerifier} from "@/assets/auth/pkce";
 import {getUri, parseToken} from "@/assets/auth/common";
 import {
-  delTokens,
-  getCodeVerifier,
-  getKcIdpHint,
-  getRefreshToken,
-  getTokens,
-  setCodeVerifier,
-  setKcIdpHint,
-  setTokens
+  delCookieTokens,
+  getCookieCodeVerifier,
+  getCookieKcIdpHint,
+  getCookieRefreshToken,
+  getCookieTokens,
+  setCookieKcIdpHintAndCodeVerifier,
+  setCookieTokens
 } from '@/assets/auth/cookies'
 import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
 
 export const state = () => ({
   kcIdpHint: null,
-  loginUrl: null,
   accessToken: null,
+  refreshToken: null,
   metadata: null,
   tokenInfo: null,
-  refreshToken: null,
 })
 
 export const getters = {
   kcIdpHint: state => state.kcIdpHint,
-  loginUrl: state => state.loginUrl,
   accessToken: state => state.accessToken,
+  refreshToken: state => state.refreshToken,
   // metadata: state => state.metadata,
   tokenInfo: state => state.tokenInfo,
-  refreshToken: state => state.refreshToken,
 }
 
 export const mutations = {
   setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
-  setLoginUrl: (state, loginUrl) => state.loginUrl = loginUrl,
   setTokens: (state, data) => {
     state.accessToken = data.access_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
@@ -41,21 +37,21 @@ export const mutations = {
   },
   setLoggedOff: (state) => {
     state.accessToken = null
+    state.refreshToken = null
     state.metadata = null
     state.tokenInfo = null
-    state.refreshToken = null
   },
 }
 
 export const actions = {
-  checkRefreshToken({commit}) {
-    if (!getRefreshToken()) {
+  async checkRefreshToken({commit}) {
+    if (!getCookieRefreshToken()) {
       commit('setLoggedOff')
     }
   },
   async mounted({state, commit, dispatch}, params) {
     setParams(params)
-    commit('setKcIdpHint', getKcIdpHint())
+    commit('setKcIdpHint', getCookieKcIdpHint())
     setInterval(() => dispatch('checkRefreshToken'), 60000);
     const logged = await dispatch('refreshToken')
     if (!logged) {
@@ -74,15 +70,13 @@ export const actions = {
       }
     }
   },
-  async setCodeVerifier({state, commit}, {redirectUri, social}) {
-    setKcIdpHint(social)
+  async setCodeVerifier({}, {redirectUri, social}) {
     let codeVerifier = generateCodeVerifier()
-    let loginUrl = await getLoginUrl(redirectUri, social, codeVerifier)
-    commit('setLoginUrl', loginUrl)
-    setCodeVerifier(codeVerifier)
+    setCookieKcIdpHintAndCodeVerifier(social, codeVerifier)
+    return await getLoginUrl(redirectUri, social, codeVerifier)
   },
   async getJwt({commit, dispatch}, {code, redirectUri}) {
-    const codeVerifier = getCodeVerifier()
+    const codeVerifier = getCookieCodeVerifier()
     if (!codeVerifier) {
       console.error('cookie CODE_VERIFIER is not set')
       return
@@ -90,29 +84,14 @@ export const actions = {
     try {
       const data = await getJwt(code, redirectUri, codeVerifier)
       commit('setTokens', data)
-      setTokens(data)
+      setCookieTokens(data)
     } catch (err) {
       commit('setLoggedOff')
       console.error(err)
     }
   },
-  async logout({commit}) {
-    const refreshToken = getRefreshToken()
-    if (refreshToken) {
-      try {
-        await logout(refreshToken)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        commit('setLoggedOff')
-        delTokens()
-      }
-    } else {
-      commit('setLoggedOff')
-    }
-  },
   async refreshToken({commit}, force) {
-    const {accessToken, refreshToken} = getTokens()
+    const {accessToken, refreshToken} = getCookieTokens()
     if (!force && accessToken) {
       commit('setTokens', {
         access_token: accessToken,
@@ -124,7 +103,7 @@ export const actions = {
       try {
         const data = await refreshJwt(refreshToken)
         commit('setTokens', data)
-        setTokens(data)
+        setCookieTokens(data)
         return true
       } catch (err) {
         console.error(err)
@@ -132,5 +111,20 @@ export const actions = {
     }
     commit('setLoggedOff')
     return false
+  },
+  async logout({commit}) {
+    const refreshToken = getCookieRefreshToken()
+    if (refreshToken) {
+      try {
+        await logout(refreshToken)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        commit('setLoggedOff')
+        delCookieTokens()
+      }
+    } else {
+      commit('setLoggedOff')
+    }
   },
 }

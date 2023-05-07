@@ -5,17 +5,17 @@ const REFRESH_TOKEN = 'refresh_token'
 const KC_IDP_HINT = 'kc_idp_hint'
 const CODE_VERIFIER = 'code_verifier'
 
-export function getRefreshToken() {
+export function getCookieRefreshToken() {
   return VueCookies.get(REFRESH_TOKEN)
 }
 
-export function getTokens() {
-  let accessToken = VueCookies.get(ACCESS_TOKEN)
-  let refreshToken = VueCookies.get(REFRESH_TOKEN)
-  return {accessToken, refreshToken}
+export function getCookieTokens() {
+  return {
+    accessToken: VueCookies.get(ACCESS_TOKEN),
+    refreshToken: VueCookies.get(REFRESH_TOKEN)}
 }
 
-export function setTokens(data) {
+export function setCookieTokens(data) {
   VueCookies.set(ACCESS_TOKEN, data.access_token, {
     maxAge: data.expires_in,
     sameSite: true,
@@ -26,31 +26,28 @@ export function setTokens(data) {
   })
 }
 
-export function delTokens() {
+export function delCookieTokens() {
   VueCookies.remove(ACCESS_TOKEN)
   VueCookies.remove(REFRESH_TOKEN)
 }
 
-export function getKcIdpHint() {
+export function getCookieKcIdpHint() {
   return VueCookies.get(KC_IDP_HINT)
 }
 
-export function setKcIdpHint(social) {
+export function setCookieKcIdpHintAndCodeVerifier(social, codeVerifier) {
   VueCookies.set(KC_IDP_HINT, social, {
     maxAge: 2592000, // 30 days
     sameSite: true,
   })
-}
-
-export function getCodeVerifier() {
-  const codeVerifier = VueCookies.get(CODE_VERIFIER)
-  VueCookies.remove(CODE_VERIFIER)
-  return codeVerifier
-}
-
-export function setCodeVerifier(codeVerifier) {
   VueCookies.set(CODE_VERIFIER, codeVerifier, {
     maxAge: 60,
     sameSite: true,
   })
+}
+
+export function getCookieCodeVerifier() {
+  const codeVerifier = VueCookies.get(CODE_VERIFIER)
+  VueCookies.remove(CODE_VERIFIER)
+  return codeVerifier
 }

@@ -20,7 +20,6 @@ export default {
     ...mapGetters({
       tokenInfo: 'mAuth/tokenInfo',
       kcIdpHint: 'mAuth/kcIdpHint',
-      loginUrl: 'mAuth/loginUrl',
     })
   },
   methods: {
@@ -28,15 +27,13 @@ export default {
       this.$store.dispatch('mAuth/logout')
     },
     login: async function () {
-      if (this.kcIdpHint) {
-        await this.$store.dispatch('mAuth/setCodeVerifier', {
-          redirectUri: getUri(location),
-          social: this.kcIdpHint,
-        })
-        window.location.href = this.loginUrl
-      } else {
+      if (!this.kcIdpHint) {
         await this.toLogInfo()
       }
+      window.location.href = await this.$store.dispatch('mAuth/setCodeVerifier', {
+        redirectUri: getUri(location),
+        social: this.kcIdpHint,
+      })
     },
     toLogInfo: async function () {
       await this.$router.push('/loginfo')
@@ -64,12 +61,12 @@ export default {
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-<!--      <v-btn icon @click.stop="clipped = !clipped">-->
-<!--        <v-icon>mdi-application</v-icon>-->
-<!--      </v-btn>-->
-<!--      <v-btn icon @click.stop="fixed = !fixed">-->
-<!--        <v-icon>mdi-minus</v-icon>-->
-<!--      </v-btn>-->
+      <!--      <v-btn icon @click.stop="clipped = !clipped">-->
+      <!--        <v-icon>mdi-application</v-icon>-->
+      <!--      </v-btn>-->
+      <!--      <v-btn icon @click.stop="fixed = !fixed">-->
+      <!--        <v-icon>mdi-minus</v-icon>-->
+      <!--      </v-btn>-->
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
       <div v-if="tokenInfo">
