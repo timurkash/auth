@@ -18,7 +18,7 @@ export default {
   computed: {
     ...mapGetters({
       tokenInfo: 'mAuth/tokenInfo',
-      kcIdpHint: 'mAuth/kcIdpHint',
+      social: 'mAuth/social',
     })
   },
   methods: {
@@ -26,7 +26,7 @@ export default {
       this.$store.dispatch('mAuth/logout')
     },
     login: async function () {
-      const social = this.kcIdpHint
+      const social = this.social
       if (!social) {
         await this.$router.push('/loginfo')
       } else {

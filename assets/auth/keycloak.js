@@ -21,10 +21,10 @@ export function setParams(theParams) {
   params = theParams
 }
 
-export async function getLoginUrl(redirectUrl, codeVerifier, social) {
+export async function getLoginUrl({redirectUri, codeVerifier, social}) {
   return `${params.url}${AUTH}?${getQuery({
     client_id: params.client,
-    redirect_uri: redirectUrl,
+    redirect_uri: redirectUri,
     state: generateUUID(),
     response_mode: 'fragment',
     response_type: 'code',
@@ -36,7 +36,7 @@ export async function getLoginUrl(redirectUrl, codeVerifier, social) {
   })}`
 }
 
-export async function getJwt(redirectUri, codeVerifier, code) {
+export async function getJwt({redirectUri, codeVerifier, code}) {
   return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,

@@ -31,7 +31,7 @@ export const getters = {
 }
 
 export const mutations = {
-  setSocial: (state, social) => state.kcIdpHint = social,
+  setSocial: (state, social) => state.social = social,
   setTokens: (state, data) => {
     state.accessToken = data.access_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
@@ -81,7 +81,7 @@ export const actions = {
     const redirectUri = getUri(location)
     const codeVerifier = generateCodeVerifier()
     setCookieCodeVerifierAndSocial({codeVerifier, social})
-    window.location.href = await getLoginUrl(redirectUri, codeVerifier, social)
+    window.location.href = await getLoginUrl({redirectUri, codeVerifier, social})
   },
   async getJwt({commit}, {redirectUri, code}) {
     const codeVerifier = getCookieCodeVerifier()
@@ -90,7 +90,7 @@ export const actions = {
       return
     }
     try {
-      const {data} = await getJwt(redirectUri, codeVerifier, code)
+      const {data} = await getJwt({redirectUri, codeVerifier, code})
       commit('setTokens', data)
       setCookieTokens(data)
     } catch (err) {
