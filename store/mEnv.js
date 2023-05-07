@@ -15,4 +15,12 @@ export const mutations = {
 }
 
 export const actions = {
+  mounted({commit}) {
+    commit('setApiUrl', this.$env.API_URL)
+    commit('setKeycloak', {
+      url: this.$env.KEYCLOAK_URL,
+      client: this.$env.KEYCLOAK_CLIENT,
+      clientSecret: this.$env.KEYCLOAK_CLIENT_SECRET,
+    })
+  }
 }

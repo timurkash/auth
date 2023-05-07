@@ -39,10 +39,8 @@ export default {
       <h3>Keycloak</h3>
       <div class="content" v-if="keycloak">
         <div class="grid-container">
-          <div class="grid-item">KEYCLOAK_URL</div>
+          <div class="grid-item">URL</div>
           <div class="grid-item">{{ keycloak.url }}</div>
-          <div class="grid-item">REALM</div>
-          <div class="grid-item">{{ keycloak.realm }}</div>
           <div class="grid-item">CLIENT</div>
           <div class="grid-item">{{ keycloak.client }}</div>
           <div class="grid-item">CLIENT_SECRET</div>

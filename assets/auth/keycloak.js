@@ -10,17 +10,20 @@ const HEADER = {
   'content-type': 'application/x-www-form-urlencoded',
 }
 
-let client, clientSecret, keycloakUrl
+let params = {
+  url: null,
+  client: null,
+  clientSecret: null
 
-export function setParams(params) {
-  client = params.client
-  clientSecret = params.clientSecret
-  keycloakUrl = `${params.url}/realms/${params.realm}/protocol/openid-connect`
+}
+
+export function setParams(theParams) {
+  params = theParams
 }
 
 export async function getLoginUrl(redirectUrl, social, codeVerifier) {
-  return `${keycloakUrl}${AUTH}?${getQuery({
-    client_id: client,
+  return `${params.url}${AUTH}?${getQuery({
+    client_id: params.client,
     redirect_uri: redirectUrl,
     state: generateUUID(),
     response_mode: 'fragment',
@@ -35,14 +38,14 @@ export async function getLoginUrl(redirectUrl, social, codeVerifier) {
 
 export async function getJwt(code, redirectUri, codeVerifier) {
   const {data} = await axios({
-    url: `${keycloakUrl}${TOKEN}`,
+    url: `${params.url}${TOKEN}`,
     method: POST,
     headers: HEADER,
     data: getQuery({
       code: code,
       grant_type: 'authorization_code',
-      client_id: client,
-      client_secret: clientSecret,
+      client_id: params.client,
+      client_secret: params.clientSecret,
       redirect_uri: redirectUri,
       code_verifier: codeVerifier,
     }),
@@ -52,13 +55,13 @@ export async function getJwt(code, redirectUri, codeVerifier) {
 
 export async function refreshJwt(refreshToken) {
   const {data} = await axios({
-    url: `${keycloakUrl}${TOKEN}`,
+    url: `${params.url}${TOKEN}`,
     method: POST,
     headers: HEADER,
     data: getQuery({
       grant_type: 'refresh_token',
-      client_id: client,
-      client_secret: clientSecret,
+      client_id: params.client,
+      client_secret: params.clientSecret,
       refresh_token: refreshToken,
     }),
   })
@@ -67,12 +70,12 @@ export async function refreshJwt(refreshToken) {
 
 export async function logout(refreshToken) {
   await axios({
-    url: `${keycloakUrl}${LOGOUT}`,
+    url: `${params.url}${LOGOUT}`,
     method: POST,
     headers: HEADER,
     data: getQuery({
-      client_id: client,
-      client_secret: clientSecret,
+      client_id: params.client,
+      client_secret: params.clientSecret,
       refresh_token: refreshToken,
     }),
   })

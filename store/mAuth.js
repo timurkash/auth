@@ -49,8 +49,12 @@ export const actions = {
       commit('setLoggedOff')
     }
   },
-  async mounted({state, commit, dispatch}, params) {
-    setParams(params)
+  async mounted({state, commit, dispatch}) {
+    setParams({
+      url: this.$env.KEYCLOAK_URL,
+      client: this.$env.KEYCLOAK_CLIENT,
+      clientSecret: this.$env.KEYCLOAK_CLIENT_SECRET,
+    })
     commit('setKcIdpHint', getCookieKcIdpHint())
     setInterval(() => dispatch('checkRefreshToken'), 60000)
     const logged = await dispatch('refreshToken')

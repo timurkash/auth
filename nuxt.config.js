@@ -42,7 +42,7 @@ export default {
   modules: [
     ['nuxt-env', {
       keys: [
-        'API_URL','KEYCLOAK_URL','REALM','CLIENT','CLIENT_SECRET',
+        'API_URL','KEYCLOAK_URL','KEYCLOAK_CLIENT','KEYCLOAK_CLIENT_SECRET',
         // Basic usage—equivalent of { key: 'TEST_ENV_VAR' }
         // { key: 'OTHER_ENV_VAR', default: 'defaultValue' } // Specify a default value
         // { key: 'THIRD_ENV_VAR', secret: true } // Only inject the var server side

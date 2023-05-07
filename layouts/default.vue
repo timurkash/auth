@@ -7,15 +7,8 @@ export default {
     ToolBar,
   },
   mounted() {
-    this.$store.commit('mEnv/setApiUrl', this.$env.API_URL)
-    const keycloakParams = {
-      url: this.$env.KEYCLOAK_URL,
-      realm: this.$env.REALM,
-      client: this.$env.CLIENT,
-      clientSecret: this.$env.CLIENT_SECRET,
-    }
-    this.$store.commit('mEnv/setKeycloak', keycloakParams)
-    this.$store.dispatch('mAuth/mounted', keycloakParams)
+    this.$store.dispatch('mEnv/mounted')
+    this.$store.dispatch('mAuth/mounted')
   },
 }
 </script>
