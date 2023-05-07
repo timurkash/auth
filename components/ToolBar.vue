@@ -1,8 +1,7 @@
 <script>
+import {mapGetters} from "vuex";
 
 import {ITEMS} from "@/assets/consts/items";
-import {mapGetters} from "vuex";
-import {getUri} from "@/assets/auth/common";
 
 export default {
   name: 'ToolBar',
@@ -27,16 +26,13 @@ export default {
       this.$store.dispatch('mAuth/logout')
     },
     login: async function () {
-      if (!this.kcIdpHint) {
-        await this.toLogInfo()
+      const social = this.kcIdpHint
+      console.log(social)
+      if (!social) {
+        await this.$router.push('/loginfo')
+      } else {
+        await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
       }
-      window.location.href = await this.$store.dispatch('mAuth/setCodeVerifier', {
-        redirectUri: getUri(location),
-        social: this.kcIdpHint,
-      })
-    },
-    toLogInfo: async function () {
-      await this.$router.push('/loginfo')
     },
   },
 }
@@ -70,7 +66,7 @@ export default {
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
       <div v-if="tokenInfo">
-        <img :src="tokenInfo.picture" alt="picture" class="picture" @click="toLogInfo">
+        <img :src="tokenInfo.picture" alt="picture" class="picture">
       </div>
       <v-btn v-if="!tokenInfo" icon @click="login">
         <v-icon>mdi-arrow-left</v-icon>

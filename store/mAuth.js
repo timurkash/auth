@@ -1,15 +1,19 @@
 import {generateCodeVerifier} from "@/assets/auth/pkce"
-import {getUri, parseToken} from "@/assets/auth/common"
+import {parseToken} from "@/assets/auth/common"
 import {
   delCookieTokens,
   getCookieCodeVerifier,
   getCookieKcIdpHint,
   getCookieRefreshToken,
   getCookieTokens,
-  setCookieCodeVerifierAndKcIdpHint,
+  setCookieCodeVerifierAndSocial,
   setCookieTokens
 } from '@/assets/auth/cookies'
 import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
+
+function getUri(location) {
+  return `${location.protocol}//${location.host}${location.pathname}${location.search}`
+}
 
 export const state = () => ({
   kcIdpHint: null,
@@ -74,10 +78,11 @@ export const actions = {
       }
     }
   },
-  async setCodeVerifier({}, {redirectUri, social}) {
-    let codeVerifier = generateCodeVerifier()
-    setCookieCodeVerifierAndKcIdpHint(codeVerifier, social)
-    return await getLoginUrl(redirectUri, codeVerifier, social)
+  async setCodeVerifier({}, {location, social}) {
+    const redirectUri = getUri(location)
+    const codeVerifier = generateCodeVerifier()
+    setCookieCodeVerifierAndSocial({codeVerifier, social})
+    window.location.href = await getLoginUrl(redirectUri, codeVerifier, social)
   },
   async getJwt({commit}, {redirectUri, code}) {
     const codeVerifier = getCookieCodeVerifier()
@@ -86,7 +91,7 @@ export const actions = {
       return
     }
     try {
-      const data = await getJwt(redirectUri, codeVerifier, code)
+      const {data} = await getJwt(redirectUri, codeVerifier, code)
       commit('setTokens', data)
       setCookieTokens(data)
     } catch (err) {
@@ -104,7 +109,7 @@ export const actions = {
     }
     if (refreshToken) {
       try {
-        const data = await refreshJwt(refreshToken)
+        const {data} = await refreshJwt(refreshToken)
         commit('setTokens', data)
         setCookieTokens(data)
         return true

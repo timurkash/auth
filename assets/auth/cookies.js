@@ -35,7 +35,7 @@ export function getCookieKcIdpHint() {
   return VueCookies.get(KC_IDP_HINT)
 }
 
-export function setCookieCodeVerifierAndKcIdpHint(codeVerifier, social) {
+export function setCookieCodeVerifierAndSocial({codeVerifier, social}) {
   VueCookies.set(CODE_VERIFIER, codeVerifier, {
     maxAge: 60,
     sameSite: true,

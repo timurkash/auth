@@ -1,5 +1,4 @@
 <script>
-import {getUri} from '@/assets/auth/common'
 import {mapGetters} from 'vuex'
 
 export default {
@@ -22,10 +21,7 @@ export default {
         alert('nothing but google is supported')
         return
       }
-      window.location.href = await this.$store.dispatch('mAuth/setCodeVerifier', {
-        redirectUri: getUri(location),
-        social: social,
-      })
+      await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
     },
     copy: async function () {
       await navigator.clipboard.writeText(`{

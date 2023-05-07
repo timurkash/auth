@@ -22,10 +22,6 @@ export function parseToken(token) {
   return JSON.parse(jsonPayload)
 }
 
-export function getUri(location) {
-  return `${location.protocol}//${location.host}${location.pathname}${location.search}`
-}
-
 export function getQuery(obj) {
   return Object.keys(obj)
     .map((key) => `${key}=${encodeURIComponent(obj[key])}`)

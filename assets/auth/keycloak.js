@@ -36,7 +36,7 @@ export async function getLoginUrl(redirectUrl, codeVerifier, social) {
 }
 
 export async function getJwt(redirectUri, codeVerifier, code) {
-  const {data} = await axios({
+  return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,
     headers: HEADER,
@@ -48,12 +48,11 @@ export async function getJwt(redirectUri, codeVerifier, code) {
       redirect_uri: redirectUri,
       code_verifier: codeVerifier,
     }),
-  })
-  return data
+  });
 }
 
 export async function refreshJwt(refreshToken) {
-  const {data} = await axios({
+  return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,
     headers: HEADER,
@@ -64,7 +63,6 @@ export async function refreshJwt(refreshToken) {
       refresh_token: refreshToken,
     }),
   })
-  return data
 }
 
 export async function logout(refreshToken) {
