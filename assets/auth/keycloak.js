@@ -10,6 +10,7 @@ const AUTHORIZATION_CODE = 'authorization_code'
 const HEADER = {
   'content-type': 'application/x-www-form-urlencoded',
 }
+const POST = 'POST'
 
 let url, realm, client, clientSecret
 
@@ -20,8 +21,14 @@ export function setParams(params) {
   clientSecret = params.clientSecret
 }
 
-export function getKeycloakUrl(route) {
+function getKeycloakUrl(route) {
   return `${url}/realms/${realm}/protocol/openid-connect/${route}`
+}
+
+function getData(params) {
+  return Object.keys(params)
+    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+    .join('&')
 }
 
 export async function getLoginUrl(redirectUrl, social, codeVerifier) {
@@ -31,17 +38,12 @@ export async function getLoginUrl(redirectUrl, social, codeVerifier) {
   return `${getKeycloakUrl(AUTH)}?client_id=${client}&redirect_uri=${redirectUrl}&state=${state}&response_mode=fragment&response_type=code&scope=openid&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256&kc_idp_hint=${social}`
 }
 
-function getString(params) {
-  return Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-    .join('&')
-}
-
 export async function getJwt(code, redirectUri, codeVerifier) {
   const {data} = await axios({
     url: getKeycloakUrl(TOKEN),
-    method: 'POST',
-    data: getString({
+    method: POST,
+    headers: HEADER,
+    data: getData({
       code: code,
       grant_type: AUTHORIZATION_CODE,
       client_id: client,
@@ -49,7 +51,6 @@ export async function getJwt(code, redirectUri, codeVerifier) {
       redirect_uri: redirectUri,
       code_verifier: codeVerifier,
     }),
-    headers: HEADER,
   })
   return data
 }
@@ -57,14 +58,14 @@ export async function getJwt(code, redirectUri, codeVerifier) {
 export async function refreshJwt(refreshToken) {
   const {data} = await axios({
     url: getKeycloakUrl(TOKEN),
-    method: 'POST',
-    data: getString({
+    method: POST,
+    headers: HEADER,
+    data: getData({
       grant_type: REFRESH_TOKEN,
       client_id: client,
       client_secret: clientSecret,
       refresh_token: refreshToken,
     }),
-    headers: HEADER,
   })
   return data
 }
@@ -72,12 +73,12 @@ export async function refreshJwt(refreshToken) {
 export async function logout(refreshToken) {
   await axios({
     url: getKeycloakUrl(LOGOUT),
-    method: 'POST',
-    data: getString({
+    method: POST,
+    headers: HEADER,
+    data: getData({
       client_id: client,
       client_secret: clientSecret,
       refresh_token: refreshToken,
     }),
-    headers: HEADER,
   })
 }
