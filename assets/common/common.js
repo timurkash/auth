@@ -1,7 +1,6 @@
 import moment from 'moment'
 
-export function randomString(characters) {
-  const length = 10
+export function randomString(characters, length = 10) {
   let result = '';
   let charactersLength = characters.length;
   for (let i = 0; i < length; i++) {

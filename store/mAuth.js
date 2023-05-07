@@ -1,5 +1,5 @@
-import {generateCodeVerifier} from "@/assets/auth/pkce";
-import {getUri, parseToken} from "@/assets/auth/common";
+import {generateCodeVerifier} from "@/assets/auth/pkce"
+import {getUri, parseToken} from "@/assets/auth/common"
 import {
   delCookieTokens,
   getCookieCodeVerifier,
@@ -52,7 +52,7 @@ export const actions = {
   async mounted({state, commit, dispatch}, params) {
     setParams(params)
     commit('setKcIdpHint', getCookieKcIdpHint())
-    setInterval(() => dispatch('checkRefreshToken'), 60000);
+    setInterval(() => dispatch('checkRefreshToken'), 60000)
     const logged = await dispatch('refreshToken')
     if (!logged) {
       const pathnameSearch = `${location.pathname}${location.search}`

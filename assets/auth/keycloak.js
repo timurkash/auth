@@ -1,6 +1,6 @@
 import axios from 'axios'
-import {generateUUID, getQuery} from '@/assets/auth/common';
-import {generateCodeChallengeFromVerifier} from '@/assets/auth/pkce';
+import {generateUUID, getQuery} from '@/assets/auth/common'
+import {generateCodeChallengeFromVerifier} from '@/assets/auth/pkce'
 
 const AUTH = '/auth'
 const TOKEN = '/token'
