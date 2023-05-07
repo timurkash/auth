@@ -31,8 +31,14 @@ export function delCookieTokens() {
   VueCookies.remove(REFRESH_TOKEN)
 }
 
-export function getCookieKcIdpHint() {
+export function getCookieSocial() {
   return VueCookies.get(KC_IDP_HINT)
+}
+
+export function getCookieCodeVerifier() {
+  const codeVerifier = VueCookies.get(CODE_VERIFIER)
+  VueCookies.remove(CODE_VERIFIER)
+  return codeVerifier
 }
 
 export function setCookieCodeVerifierAndSocial({codeVerifier, social}) {
@@ -44,10 +50,4 @@ export function setCookieCodeVerifierAndSocial({codeVerifier, social}) {
     maxAge: 2592000, // 30 days
     sameSite: true,
   })
-}
-
-export function getCookieCodeVerifier() {
-  const codeVerifier = VueCookies.get(CODE_VERIFIER)
-  VueCookies.remove(CODE_VERIFIER)
-  return codeVerifier
 }

@@ -3,7 +3,7 @@ import {parseToken} from "@/assets/auth/common"
 import {
   delCookieTokens,
   getCookieCodeVerifier,
-  getCookieKcIdpHint,
+  getCookieSocial,
   getCookieRefreshToken,
   getCookieTokens,
   setCookieCodeVerifierAndSocial,
@@ -16,7 +16,7 @@ function getUri(location) {
 }
 
 export const state = () => ({
-  kcIdpHint: null,
+  social: null,
   accessToken: null,
   refreshToken: null,
   metadata: null,
@@ -24,15 +24,14 @@ export const state = () => ({
 })
 
 export const getters = {
-  kcIdpHint: state => state.kcIdpHint,
+  social: state => state.social,
   accessToken: state => state.accessToken,
   refreshToken: state => state.refreshToken,
-  // metadata: state => state.metadata,
   tokenInfo: state => state.tokenInfo,
 }
 
 export const mutations = {
-  setKcIdpHint: (state, kcIdpHint) => state.kcIdpHint = kcIdpHint,
+  setSocial: (state, social) => state.kcIdpHint = social,
   setTokens: (state, data) => {
     state.accessToken = data.access_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
@@ -59,7 +58,7 @@ export const actions = {
       client: this.$env.KEYCLOAK_CLIENT,
       clientSecret: this.$env.KEYCLOAK_CLIENT_SECRET,
     })
-    commit('setKcIdpHint', getCookieKcIdpHint())
+    commit('setSocial', getCookieSocial())
     setInterval(() => dispatch('checkRefreshToken'), 60000)
     const logged = await dispatch('refreshToken')
     if (!logged) {
