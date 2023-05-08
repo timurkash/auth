@@ -93,18 +93,16 @@ export const actions = {
       })
       return true
     }
-    if (!refreshToken) {
-      commit('setLoggedOff')
-      return false
+    if (refreshToken) {
+      try {
+        commit('setTokens', await refreshJwt(refreshToken))
+        return true
+      } catch (err) {
+        console.error(err)
+      }
     }
-    try {
-      commit('setTokens', await refreshJwt(refreshToken))
-      return true
-    } catch (err) {
-      console.error(err)
-      commit('setLoggedOff')
-      return false
-    }
+    commit('setLoggedOff')
+    return false
   },
   async logout({commit}) {
     const {refreshToken} = getCookieTokens()
