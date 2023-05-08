@@ -50,7 +50,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async mounted({state, commit, dispatch}) {
+  async mounted({commit, dispatch}) {
     setParams({
       url: this.$env.KEYCLOAK_URL,
       client: this.$env.KEYCLOAK_CLIENT,
@@ -64,14 +64,15 @@ export const actions = {
       }
     }, minute)
     if (!await dispatch('refreshToken')) {
-      const pathnameSearch = `${location.pathname}${location.search}`
-      if (state.accessToken) {
-        await this.$router.push(pathnameSearch)
-      } else {
-        const code = new URLSearchParams(location.hash.substring(1)).get("code")
-        await this.$router.push(pathnameSearch)
-        if (code) {
-          await dispatch('getJwt', {location, code})
+      const code = new URLSearchParams(location.hash.substring(1)).get("code")
+      const codeVerifier = getCookieCodeVerifier()
+      await this.$router.push(`${location.pathname}${location.search}`)
+      if (codeVerifier && code) {
+        try {
+          commit('setTokens', await getJwt({location, codeVerifier, code}))
+        } catch (err) {
+          console.log(err)
+          commit('setLoggedOff')
         }
       }
     }
@@ -80,18 +81,6 @@ export const actions = {
     const codeVerifier = generateCodeVerifier()
     setCookieCodeVerifierAndSocial({codeVerifier, social})
     window.location.href = await getLoginUrl({location, codeVerifier, social})
-  },
-  async getJwt({commit}, {location, code}) {
-    const codeVerifier = getCookieCodeVerifier()
-    if (!codeVerifier) {
-      console.error('cookie CODE_VERIFIER is not set')
-      return
-    }
-    try {
-      commit('setTokens', await getJwt({location, codeVerifier, code}))
-    } catch (err) {
-      commit('setLoggedOff')
-    }
   },
   async refreshToken({commit}, force) {
     const {accessToken, refreshToken} = getCookieTokens()
@@ -119,14 +108,12 @@ export const actions = {
   },
   async logout({commit}) {
     const {refreshToken} = getCookieTokens()
-    if (!refreshToken) {
-      commit('setLoggedOff')
-      return
-    }
-    try {
-      await logout(refreshToken)
-    } catch (err) {
-      console.error(err)
+    if (refreshToken) {
+      try {
+        await logout(refreshToken)
+      } catch (err) {
+        console.error(err)
+      }
     }
     commit('setLoggedOff')
   },

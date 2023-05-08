@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import {generateUUID, getQuery} from '@/assets/auth/common'
+import {generateUUID} from '@/assets/auth/common'
 import {generateCodeChallengeFromVerifier} from '@/assets/auth/pkce'
 
 const AUTH = '/auth'
@@ -23,6 +23,12 @@ export function setParams(theParams) {
 
 function getUri(location) {
   return `${location.protocol}//${location.host}${location.pathname}${location.search}`
+}
+
+function getQuery(obj) {
+  return Object.keys(obj)
+    .map((key) => `${key}=${encodeURIComponent(obj[key])}`)
+    .join('&')
 }
 
 export async function getLoginUrl({location, codeVerifier, social}) {

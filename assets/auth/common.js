@@ -21,9 +21,3 @@ export function parseToken(token) {
   }).join(''))
   return JSON.parse(jsonPayload)
 }
-
-export function getQuery(obj) {
-  return Object.keys(obj)
-    .map((key) => `${key}=${encodeURIComponent(obj[key])}`)
-    .join('&')
-}
