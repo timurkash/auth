@@ -5,10 +5,6 @@ const REFRESH_TOKEN = 'refresh_token'
 const KC_IDP_HINT = 'kc_idp_hint'
 const CODE_VERIFIER = 'code_verifier'
 
-export function getCookieRefreshToken() {
-  return VueCookies.get(REFRESH_TOKEN)
-}
-
 export function getCookieTokens() {
   return {
     accessToken: VueCookies.get(ACCESS_TOKEN),

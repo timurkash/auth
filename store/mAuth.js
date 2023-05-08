@@ -3,7 +3,6 @@ import {parseToken} from "@/assets/auth/common"
 import {
   delCookieTokens,
   getCookieCodeVerifier,
-  getCookieRefreshToken,
   getCookieSocial,
   getCookieTokens,
   setCookieCodeVerifierAndSocial,
@@ -34,21 +33,26 @@ export const mutations = {
   },
   setTokens: (state, data) => {
     state.accessToken = data.access_token
+    state.refreshToken = data.refresh_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
     state.tokenInfo = parseToken(data.access_token)
-    state.refreshToken = data.refresh_token
+    setCookieTokens(data)
   },
-  setLoggedOff: (state) => {
+  setLoggedOff: (state, delCookies) => {
     state.accessToken = null
     state.refreshToken = null
     state.metadata = null
     state.tokenInfo = null
+    if (delCookies) {
+      delCookieTokens()
+    }
   },
 }
 
 export const actions = {
   checkRefreshToken({commit}) {
-    if (!getCookieRefreshToken()) {
+    const {refreshToken} = getCookieTokens()
+    if (!refreshToken) {
       commit('setLoggedOff')
     }
   },
@@ -88,9 +92,8 @@ export const actions = {
     try {
       const {data} = await getJwt({location, codeVerifier, code})
       commit('setTokens', data)
-      setCookieTokens(data)
     } catch (err) {
-      commit('setLoggedOff')
+      commit('setLoggedOff', true)
     }
   },
   async refreshToken({commit}, force) {
@@ -102,32 +105,31 @@ export const actions = {
       })
       return true
     }
-    if (refreshToken) {
-      try {
-        const {data} = await refreshJwt(refreshToken)
-        commit('setTokens', data)
-        setCookieTokens(data)
-        return true
-      } catch (err) {
-        console.error(err)
-      }
+    if (!refreshToken) {
+      commit('setLoggedOff')
+      return false
     }
-    commit('setLoggedOff')
-    return false
+    try {
+      const {data} = await refreshJwt(refreshToken)
+      commit('setTokens', data)
+      return true
+    } catch (err) {
+      console.error(err)
+      commit('setLoggedOff', true)
+      return false
+    }
   },
   async logout({commit}) {
-    const refreshToken = getCookieRefreshToken()
-    if (refreshToken) {
-      try {
-        await logout(refreshToken)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        commit('setLoggedOff')
-        delCookieTokens()
-      }
-    } else {
+    const {refreshToken} = getCookieTokens()
+    if (!refreshToken) {
       commit('setLoggedOff')
+      return
     }
+    try {
+      await logout(refreshToken)
+    } catch (err) {
+      console.error(err)
+    }
+    commit('setLoggedOff', true)
   },
 }
