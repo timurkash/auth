@@ -12,14 +12,16 @@ export function getCookieTokens() {
 }
 
 export function setCookieTokens(data) {
-  VueCookies.set(ACCESS_TOKEN, data.access_token, {
-    maxAge: data.expires_in,
-    sameSite: true,
-  })
-  VueCookies.set(REFRESH_TOKEN, data.refresh_token, {
-    maxAge: data.refresh_expires_in,
-    sameSite: true,
-  })
+  if (data.expires_in) {
+    VueCookies.set(ACCESS_TOKEN, data.access_token, {
+      maxAge: data.expires_in,
+      sameSite: true,
+    })
+    VueCookies.set(REFRESH_TOKEN, data.refresh_token, {
+      maxAge: data.refresh_expires_in,
+      sameSite: true,
+    })
+  }
 }
 
 export function delCookieTokens() {
