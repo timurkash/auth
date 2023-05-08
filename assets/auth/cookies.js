@@ -13,16 +13,10 @@ export function getCookieTokens() {
 
 export function setCookieTokens(data) {
   if (data.expires_in) {
-    VueCookies.set(ACCESS_TOKEN, data.access_token, {
-      maxAge: data.expires_in,
-      sameSite: true,
-    })
+    VueCookies.set(ACCESS_TOKEN, data.access_token, `${data.expires_in}s`)
   }
   if (data.refresh_expires_in) {
-    VueCookies.set(REFRESH_TOKEN, data.refresh_token, {
-      maxAge: data.refresh_expires_in,
-      sameSite: true,
-    })
+    VueCookies.set(REFRESH_TOKEN, data.refresh_token, `${data.refresh_expires_in}s`)
   }
 }
 
@@ -42,12 +36,6 @@ export function getCookieSocial() {
 }
 
 export function setCookieCodeVerifierAndSocial({codeVerifier, social}) {
-  VueCookies.set(CODE_VERIFIER, codeVerifier, {
-    maxAge: 60,
-    sameSite: true,
-  })
-  VueCookies.set(KC_IDP_HINT, social, {
-    maxAge: 2592000, // 30 days
-    sameSite: true,
-  })
+  VueCookies.set(CODE_VERIFIER, codeVerifier, "60s")
+  VueCookies.set(KC_IDP_HINT, social, "30d")
 }

@@ -10,6 +10,8 @@ import {
 } from '@/assets/auth/cookies'
 import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
 
+const minute = 60000
+
 export const state = () => ({
   social: null,
   accessToken: null,
@@ -31,7 +33,7 @@ export const mutations = {
       state.social = social
     }
   },
-  setTokens: (state, data) => {
+  setTokens: (state, {data}) => {
     state.accessToken = data.access_token
     state.refreshToken = data.refresh_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
@@ -50,12 +52,6 @@ export const mutations = {
 }
 
 export const actions = {
-  checkRefreshToken({commit}) {
-    const {refreshToken} = getCookieTokens()
-    if (!refreshToken) {
-      commit('setLoggedOff')
-    }
-  },
   async mounted({state, commit, dispatch}) {
     setParams({
       url: this.$env.KEYCLOAK_URL,
@@ -63,7 +59,12 @@ export const actions = {
       clientSecret: this.$env.KEYCLOAK_CLIENT_SECRET,
     })
     commit('setSocial', getCookieSocial())
-    setInterval(() => dispatch('checkRefreshToken'), 60000)
+    setInterval(() => {
+      const {refreshToken} = getCookieTokens()
+      if (!refreshToken) {
+        commit('setLoggedOff')
+      }
+    }, minute)
     const logged = await dispatch('refreshToken')
     if (!logged) {
       const pathnameSearch = `${location.pathname}${location.search}`
@@ -90,8 +91,7 @@ export const actions = {
       return
     }
     try {
-      const {data} = await getJwt({location, codeVerifier, code})
-      commit('setTokens', data)
+      commit('setTokens', await getJwt({location, codeVerifier, code}))
     } catch (err) {
       commit('setLoggedOff', true)
     }
@@ -100,8 +100,10 @@ export const actions = {
     const {accessToken, refreshToken} = getCookieTokens()
     if (!force && accessToken) {
       commit('setTokens', {
-        access_token: accessToken,
-        refresh_token: refreshToken,
+        data: {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        }
       })
       return true
     }
@@ -110,8 +112,7 @@ export const actions = {
       return false
     }
     try {
-      const {data} = await refreshJwt(refreshToken)
-      commit('setTokens', data)
+      commit('setTokens', await refreshJwt(refreshToken))
       return true
     } catch (err) {
       console.error(err)
