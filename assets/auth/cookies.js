@@ -17,6 +17,8 @@ export function setCookieTokens(data) {
       maxAge: data.expires_in,
       sameSite: true,
     })
+  }
+  if (data.refresh_expires_in) {
     VueCookies.set(REFRESH_TOKEN, data.refresh_token, {
       maxAge: data.refresh_expires_in,
       sameSite: true,
@@ -29,14 +31,14 @@ export function delCookieTokens() {
   VueCookies.remove(REFRESH_TOKEN)
 }
 
-export function getCookieSocial() {
-  return VueCookies.get(KC_IDP_HINT)
-}
-
 export function getCookieCodeVerifier() {
   const codeVerifier = VueCookies.get(CODE_VERIFIER)
   VueCookies.remove(CODE_VERIFIER)
   return codeVerifier
+}
+
+export function getCookieSocial() {
+  return VueCookies.get(KC_IDP_HINT)
 }
 
 export function setCookieCodeVerifierAndSocial({codeVerifier, social}) {
