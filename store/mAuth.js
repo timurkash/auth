@@ -40,14 +40,12 @@ export const mutations = {
     state.tokenInfo = parseToken(data.access_token)
     setCookieTokens(data)
   },
-  setLoggedOff: (state, delCookies) => {
+  setLoggedOff: (state) => {
     state.accessToken = null
     state.refreshToken = null
     state.metadata = null
     state.tokenInfo = null
-    if (delCookies) {
-      delCookieTokens()
-    }
+    delCookieTokens()
   },
 }
 
@@ -65,8 +63,7 @@ export const actions = {
         commit('setLoggedOff')
       }
     }, minute)
-    const logged = await dispatch('refreshToken')
-    if (!logged) {
+    if (!await dispatch('refreshToken')) {
       const pathnameSearch = `${location.pathname}${location.search}`
       if (state.accessToken) {
         await this.$router.push(pathnameSearch)
@@ -93,7 +90,7 @@ export const actions = {
     try {
       commit('setTokens', await getJwt({location, codeVerifier, code}))
     } catch (err) {
-      commit('setLoggedOff', true)
+      commit('setLoggedOff')
     }
   },
   async refreshToken({commit}, force) {
@@ -116,7 +113,7 @@ export const actions = {
       return true
     } catch (err) {
       console.error(err)
-      commit('setLoggedOff', true)
+      commit('setLoggedOff')
       return false
     }
   },
@@ -131,6 +128,6 @@ export const actions = {
     } catch (err) {
       console.error(err)
     }
-    commit('setLoggedOff', true)
+    commit('setLoggedOff')
   },
 }
