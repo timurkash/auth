@@ -11,10 +11,6 @@ import {
 } from '@/assets/auth/cookies'
 import {getJwt, getLoginUrl, logout, refreshJwt, setParams} from '@/assets/auth/keycloak'
 
-function getUri(location) {
-  return `${location.protocol}//${location.host}${location.pathname}${location.search}`
-}
-
 export const state = () => ({
   social: null,
   accessToken: null,
@@ -31,7 +27,11 @@ export const getters = {
 }
 
 export const mutations = {
-  setSocial: (state, social) => state.social = social,
+  setSocial: (state, social) => {
+    if (social) {
+      state.social = social
+    }
+  },
   setTokens: (state, data) => {
     state.accessToken = data.access_token
     state.metadata = {authorization: `Bearer ${data.access_token}`}
@@ -47,7 +47,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async checkRefreshToken({commit}) {
+  checkRefreshToken({commit}) {
     if (!getCookieRefreshToken()) {
       commit('setLoggedOff')
     }
@@ -77,7 +77,7 @@ export const actions = {
   async setCodeVerifier({}, {location, social}) {
     const codeVerifier = generateCodeVerifier()
     setCookieCodeVerifierAndSocial({codeVerifier, social})
-    window.location.href = await getLoginUrl({redirectUri: getUri(location), codeVerifier, social})
+    window.location.href = await getLoginUrl({location, codeVerifier, social})
   },
   async getJwt({commit}, {location, code}) {
     const codeVerifier = getCookieCodeVerifier()
@@ -86,7 +86,7 @@ export const actions = {
       return
     }
     try {
-      const {data} = await getJwt({redirectUri: getUri(location), codeVerifier, code})
+      const {data} = await getJwt({location, codeVerifier, code})
       commit('setTokens', data)
       setCookieTokens(data)
     } catch (err) {
