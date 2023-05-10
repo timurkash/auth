@@ -14,8 +14,8 @@ export default {
   },
   methods: {
     getTime() {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      this.$store.dispatch('mTime/getTime', randomString(characters, 10))
+      this.$store.dispatch('mTime/getTime',
+        randomString('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10))
     },
     empty() {
       this.$store.commit('mTime/emptyTimeString')
@@ -31,7 +31,7 @@ export default {
 <!--        <Tutorial/>-->
 <!--      </v-col>-->
 <!--    </v-row>-->
-    <v-row><img src="/v.png" alt="Vuetify.js" class="vuetify"/></v-row>
+    <v-row><img src="/vuetify-logo.svg" alt="Vuetify.js" class="vuetify"/></v-row>
     <v-row>
       <v-col class="text-center">
         <blockquote class="blockquote">
@@ -65,6 +65,8 @@ export default {
 
 <style lang="scss" scoped>
 img.vuetify {
+  margin-top: 20px;
+  height: 100px;
   margin-left: auto;
   margin-right: auto;
 }
