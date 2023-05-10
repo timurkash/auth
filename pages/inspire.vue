@@ -26,11 +26,6 @@ export default {
 
 <template>
   <div>
-<!--    <v-row>-->
-<!--      <v-col class="text-center">-->
-<!--        <Tutorial/>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
     <v-row><img src="/vuetify-logo.svg" alt="Vuetify.js" class="vuetify"/></v-row>
     <v-row>
       <v-col class="text-center">
@@ -70,5 +65,4 @@ img.vuetify {
   margin-left: auto;
   margin-right: auto;
 }
-
 </style>
