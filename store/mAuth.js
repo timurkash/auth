@@ -41,11 +41,13 @@ export const mutations = {
     setCookieTokens(data)
   },
   setLoggedOff: (state) => {
-    state.accessToken = null
-    state.refreshToken = null
-    state.metadata = null
-    state.tokenInfo = null
-    delCookieTokens()
+    if (state.accessToken) {
+      state.accessToken = null
+      state.refreshToken = null
+      state.metadata = null
+      state.tokenInfo = null
+      delCookieTokens()
+    }
   },
 }
 
@@ -101,7 +103,6 @@ export const actions = {
         console.error(err)
       }
     }
-    commit('setLoggedOff')
     return false
   },
   async logout({commit}) {
