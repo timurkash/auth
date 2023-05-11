@@ -46,7 +46,7 @@ export default {
     </v-row>
     <div v-if="tokenInfo">
       <v-row>
-        <v-col class="col-10">
+        <v-col class="col-9">
           <h3>tokenInfo</h3>
           <div class="grid-container">
             <h4>Id</h4>
@@ -63,7 +63,7 @@ export default {
             </h5>
           </div>
         </v-col>
-        <v-col class="col-2">
+        <v-col class="col-3">
           <v-card width="96">
             <v-img class="pic" :src="tokenInfo.picture" alt="pic"/>
           </v-card>
