@@ -31,7 +31,6 @@ export const actions = {
       const metadata = rootState.mAuth.metadata
       // if (metadata) {
       const getCurrentTimeRequest = new GetCurrentTimeRequest().setDump(dump)
-      console.log("here")
       const response = await client.getCurrentTime(getCurrentTimeRequest, metadata)
       commit('unshiftTimeString', response.getCurrentTime())
       const currentTime2 = getDateTime(response.getCurrentTime2())
