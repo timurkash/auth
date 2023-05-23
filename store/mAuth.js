@@ -71,7 +71,7 @@ export const actions = {
       await this.$router.push(`${location.pathname}${location.search}`)
       if (codeVerifier && code) {
         try {
-          commit('setTokens', await getJwt({location, codeVerifier, code}))
+          commit('setTokens', await getJwt({codeVerifier, code}))
         } catch (err) {
           console.log(err)
           commit('setLoggedOff')
@@ -79,10 +79,10 @@ export const actions = {
       }
     }
   },
-  async setCodeVerifier({}, {location, social}) {
+  async setCodeVerifier({}, social) {
     const codeVerifier = generateCodeVerifier()
     setCookieCodeVerifierAndSocial({codeVerifier, social})
-    window.location.href = await getLoginUrl({location, codeVerifier, social})
+    window.location.href = await getLoginUrl({codeVerifier, social})
   },
   async refreshToken({commit}, force) {
     const {accessToken, refreshToken} = getCookieTokens()

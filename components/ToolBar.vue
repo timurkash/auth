@@ -30,7 +30,7 @@ export default {
       if (!social) {
         await this.$router.push('/loginfo')
       } else {
-        await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
+        await this.$store.dispatch('mAuth/setCodeVerifier', social)
       }
     },
   },

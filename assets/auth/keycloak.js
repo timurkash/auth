@@ -21,7 +21,7 @@ export function setParams(theParams) {
   params = theParams
 }
 
-function getUri(location) {
+function getUri() {
   return `${location.protocol}//${location.host}${location.pathname}${location.search}`
 }
 
@@ -31,10 +31,10 @@ function getQuery(obj) {
     .join('&')
 }
 
-export async function getLoginUrl({location, codeVerifier, social}) {
+export async function getLoginUrl({codeVerifier, social}) {
   return `${params.url}${AUTH}?${getQuery({
     client_id: params.client,
-    redirect_uri: getUri(location),
+    redirect_uri: getUri(),
     state: generateUUID(),
     response_mode: 'fragment',
     response_type: 'code',
@@ -46,7 +46,7 @@ export async function getLoginUrl({location, codeVerifier, social}) {
   })}`
 }
 
-export async function getJwt({location, codeVerifier, code}) {
+export async function getJwt({codeVerifier, code}) {
   return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,
@@ -56,7 +56,7 @@ export async function getJwt({location, codeVerifier, code}) {
       grant_type: 'authorization_code',
       client_id: params.client,
       client_secret: params.clientSecret,
-      redirect_uri: getUri(location),
+      redirect_uri: getUri(),
       code_verifier: codeVerifier,
     }),
   });

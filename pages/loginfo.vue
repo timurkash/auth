@@ -20,7 +20,7 @@ export default {
       if (social !== 'google') {
         alert('nothing but google is supported')
       } else {
-        await this.$store.dispatch('mAuth/setCodeVerifier', {location, social})
+        await this.$store.dispatch('mAuth/setCodeVerifier', social)
       }
     },
     forceRefresh: async function () {
