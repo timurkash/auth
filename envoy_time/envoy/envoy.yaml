@@ -18,13 +18,13 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: local_service
+                    - name: backend
                       domains: ["*"]
                       routes:
-                        - match: { prefix: "/time." }
+                        - match:
+                            prefix: "/time."
                           route:
                             cluster: time-service-cluster
-                            max_grpc_timeout: 0s
                       cors:
                         allow_origin_string_match:
                           - prefix: "*"
@@ -32,10 +32,20 @@ static_resources:
                         allow_headers: authorization,keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,custom-header-1,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout
                         max_age: "1728000"
                         expose_headers: custom-header-1,grpc-status,grpc-message
-                http_filters:
-                  - name: envoy.filters.http.grpc_web
-                  - name: envoy.filters.http.cors
-                  - name: envoy.filters.http.router
+#                http_filters:
+#                  - name: envoy.filters.http.grpc_web
+#                  - name: envoy.filters.http.cors
+#                  - name: envoy.filters.http.router
+#          transport_socket:
+#            name: envoy.transport_sockets.tls
+#            typed_config:
+#              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+#              common_tls_context:
+#                tls_certificates:
+#                  - certificate_chain:
+#                      filename: "/etc/ssl/certs/example-com.crt"
+#                    private_key:
+#                      filename: "/etc/ssl/private/example-com.key"
   clusters:
     - name: time-service-cluster
       connect_timeout: 0.25s
