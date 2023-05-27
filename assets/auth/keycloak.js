@@ -7,9 +7,9 @@ const AUTH = '/auth'
 const TOKEN = '/token'
 const LOGOUT = '/logout'
 const POST = 'POST'
-const HEADER = {
-  'content-type': 'application/x-www-form-urlencoded',
-}
+// const HEADER = {
+//   'content-type': 'application/x-www-form-urlencoded',
+// }
 
 let params = {
   url: null,
@@ -50,7 +50,7 @@ export async function getJwt({codeVerifier, code}) {
   return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,
-    headers: HEADER,
+    // headers: HEADER,
     data: getQuery({
       code: code,
       grant_type: 'authorization_code',
@@ -66,7 +66,7 @@ export async function refreshJwt(refreshToken) {
   return axios({
     url: `${params.url}${TOKEN}`,
     method: POST,
-    headers: HEADER,
+    // headers: HEADER,
     data: getQuery({
       grant_type: 'refresh_token',
       client_id: params.client,
@@ -80,7 +80,7 @@ export async function logout(refreshToken) {
   return axios({
     url: `${params.url}${LOGOUT}`,
     method: POST,
-    headers: HEADER,
+    // headers: HEADER,
     data: getQuery({
       client_id: params.client,
       client_secret: params.clientSecret,
