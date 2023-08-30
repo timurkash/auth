@@ -54,10 +54,10 @@ export async function getJwt({codeVerifier, code}) {
     data: getQuery({
       code: code,
       grant_type: 'authorization_code',
+      code_verifier: codeVerifier,
       client_id: params.client,
       client_secret: params.clientSecret,
       redirect_uri: getUri(),
-      code_verifier: codeVerifier,
     }),
   });
 }
@@ -69,9 +69,9 @@ export async function refreshJwt(refreshToken) {
     // headers: HEADER,
     data: getQuery({
       grant_type: 'refresh_token',
+      refresh_token: refreshToken,
       client_id: params.client,
       client_secret: params.clientSecret,
-      refresh_token: refreshToken,
     }),
   })
 }
